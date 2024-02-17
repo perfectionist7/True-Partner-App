@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xff6200EE),
+                  backgroundColor: const Color(0xff6200EE),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {
@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xffFFFFFF),
+                  backgroundColor: const Color(0xffFFFFFF),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {},
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xffFFFFFF),
+                  backgroundColor: const Color(0xffFFFFFF),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {},
@@ -200,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xff6200EE),
+                  backgroundColor: const Color(0xff6200EE),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {
