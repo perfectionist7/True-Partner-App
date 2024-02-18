@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.dmSans(
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
-                          color: Color(0xff6200EE),
+                          color: Color(0xFF4178F3),
                         ))
                   ])),
                 ),
