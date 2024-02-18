@@ -75,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             Map<String, String> data = controller.chats[index];
                             return Align(
-                                alignment: data["id"] == "0"
+                                alignment: data["id"] ==
+                                        "0" //id=0 is for the user, 1 for chatbot
                                     ? Alignment.centerRight
                                     : Alignment.centerLeft,
                                 child: Text(

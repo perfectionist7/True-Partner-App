@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'controllers/chat_controller.dart';
 
 var base =
-    "https://z6oadbxpe63y2guepx7oi4q5xq0cpkir.lambda-url.eu-north-1.on.aws";
+    "https://je42hct7adwr6stopdxzfxc6v40cndnr.lambda-url.eu-north-1.on.aws";
 
 var controller = Get.find<ChatsController>();
 

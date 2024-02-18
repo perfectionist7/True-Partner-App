@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xff6200EE),
+                  backgroundColor: const Color(0xff6200EE),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {},
@@ -106,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xffFFFFFF),
+                  backgroundColor: const Color(0xffFFFFFF),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {},
@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xffFFFFFF),
+                  backgroundColor: const Color(0xffFFFFFF),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {
@@ -174,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // ignore: deprecated_member_use
-                  primary: const Color(0xff6200EE),
+                  backgroundColor: const Color(0xff6200EE),
                   padding: const EdgeInsets.all(12),
                 ),
                 onPressed: () {
