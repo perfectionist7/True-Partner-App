@@ -1,4 +1,4 @@
-import 'package:deevot_new_project/api_services.dart';
+import 'api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,70 +74,147 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemCount: controller.chats.length,
                           itemBuilder: (BuildContext context, int index) {
                             Map<String, String> data = controller.chats[index];
-                            return Align(
-                                alignment: data["id"] ==
-                                        "0" //id=0 is for the user, 1 for chatbot
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
-                                child: Text(
-                                  data["text"]!,
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ));
+                            return Container(
+                                margin: EdgeInsets.only(
+                                    top: 10, left: 10, right: 10),
+                                child: Align(
+                                    alignment: data["id"] ==
+                                            "0" //id=0 is for the user, 1 for chatbot
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    child: Text(
+                                      data["text"]!,
+                                      style: GoogleFonts.dmSans(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black),
+                                    )));
                           },
                         ))),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: controller.questionSet[controller.index].length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.fromLTRB(10, 10, 30, 20),
-                      decoration: BoxDecoration(
+          SizedBox(
+            height: 150,
+            child: ListView.builder(
+              itemCount:
+                  (controller.questionSet[controller.index].length / 2).ceil(),
+              itemBuilder: (BuildContext context, int rowIndex) {
+                int firstIndex = rowIndex * 2;
+                int secondIndex = firstIndex + 1;
+
+                // Check if second index exceeds the length of the list
+                bool isSecondIndexValid = secondIndex <
+                    controller.questionSet[controller.index].length;
+
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        margin: const EdgeInsets.fromLTRB(20, 0, 10, 20),
+                        decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
+                              color: Colors.black.withOpacity(0.10),
                               blurRadius: 4,
-                              offset: const Offset(
-                                  0, 4), // changes position of shadow
+                              offset: const Offset(0, 4),
                             ),
                           ],
-                          border: Border.all(color: const Color(0xff0A1621)),
-                          color: Colors.grey[400],
+                          border: Border.all(color: Color(0xffD3D3D3)),
+                          color: Colors.white,
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(15))),
-                      child: ListTile(
-                        title: Text(
-                          controller.questionSet[controller.index][index],
-                          style: GoogleFonts.poppins(
+                              const BorderRadius.all(Radius.circular(15)),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            controller.questionSet[controller.index]
+                                [firstIndex],
+                            style: GoogleFonts.dmSans(
                               fontSize: 16,
                               color: Colors.black,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            Map<String, String> sender = {};
-                            sender.addAll({
-                              "id": "0",
-                              "text": controller.questionSet[controller.index]
-                                  [index],
-                            });
-                            controller.chats.add(sender);
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              Map<String, String> sender = {
+                                "id": "0",
+                                "text": controller.questionSet[controller.index]
+                                    [firstIndex],
+                              };
+                              controller.chats.add(sender);
 
-                            if (controller.index <
-                                controller.questions.length - 1) {
-                              controller.index += 1;
-                              Map<String, String> reciever = {};
-                              reciever.addAll({
-                                "id": "1",
-                                "text": controller.questions[controller.index]
-                              });
-                              controller.chats.add(reciever);
-                            }
-                          });
-                        },
+                              if (controller.index <
+                                  controller.questions.length - 1) {
+                                controller.index += 1;
+                                Map<String, String> receiver = {
+                                  "id": "1",
+                                  "text":
+                                      controller.questions[controller.index],
+                                };
+                                controller.chats.add(receiver);
+                              }
+                            });
+                          },
+                        ),
                       ),
-                    );
-                  })),
+                    ),
+                    if (isSecondIndexValid)
+                      Expanded(
+                        child: Container(
+                          height: 60,
+                          margin: const EdgeInsets.fromLTRB(5, 0, 20, 20),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.10),
+                                blurRadius: 4,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                            border: Border.all(color: Color(0xffD3D3D3)),
+                            color: Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              controller.questionSet[controller.index]
+                                  [secondIndex],
+                              style: GoogleFonts.dmSans(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                Map<String, String> sender = {
+                                  "id": "0",
+                                  "text":
+                                      controller.questionSet[controller.index]
+                                          [secondIndex],
+                                };
+                                controller.chats.add(sender);
+
+                                if (controller.index <
+                                    controller.questions.length - 1) {
+                                  controller.index += 1;
+                                  Map<String, String> receiver = {
+                                    "id": "1",
+                                    "text":
+                                        controller.questions[controller.index],
+                                  };
+                                  controller.chats.add(receiver);
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
           Row(
             children: [
               Expanded(
@@ -169,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
               .box
               .height(80)
-              .margin(const EdgeInsets.only(bottom: 8))
+              .margin(const EdgeInsets.only(bottom: 0))
               .padding(const EdgeInsets.all(8.0))
               .make(),
         ],
