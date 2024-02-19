@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 IconButton(
+                    color: Colors.white,
                     onPressed: () {
                       Get.back();
                     },

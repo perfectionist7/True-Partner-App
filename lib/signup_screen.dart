@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -75,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 margin: EdgeInsets.only(top: 8, left: 24, right: 24),
                 child: TextField(
                   style: GoogleFonts.dmSans(
-                    fontSize: 0.0153061224489796 * screenHeight,
+                    fontSize: 12,
                     fontWeight: FontWeight.w300,
                     color: Colors.black,
                   ),
@@ -85,14 +86,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Type your name',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 0.0127551020408163 * screenHeight,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
                     contentPadding: EdgeInsets.only(
                         left: 0.0360416666666667 * screenWidth,
                         right: 0.0260416666666667 * screenWidth,
-                        bottom: 0.0216836734693878 * screenHeight),
+                        bottom: 0.0166836734693878 * screenHeight),
                     border: InputBorder.none,
                   ),
                 ),
@@ -132,14 +133,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Type your email ID',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 0.0127551020408163 * screenHeight,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
                     contentPadding: EdgeInsets.only(
                         left: 0.0360416666666667 * screenWidth,
                         right: 0.0260416666666667 * screenWidth,
-                        bottom: 0.0216836734693878 * screenHeight),
+                        bottom: 0.0166836734693878 * screenHeight),
                     border: InputBorder.none,
                   ),
                 ),
@@ -180,14 +181,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Create a password',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 0.0127551020408163 * screenHeight,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
                     contentPadding: EdgeInsets.only(
                         left: 0.0360416666666667 * screenWidth,
                         right: 0.0260416666666667 * screenWidth,
-                        bottom: 0.0216836734693878 * screenHeight),
+                        bottom: 0.0166836734693878 * screenHeight),
                     border: InputBorder.none,
                   ),
                 ),
@@ -287,14 +288,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(100, 90, 70, 0),
+                margin: EdgeInsets.fromLTRB(80, 40, 70, 0),
                 child: TextButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const SignUpScreen()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
                     // _passwordcontroller.clear();
                     // _controller.clear();
                   },

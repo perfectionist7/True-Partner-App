@@ -93,14 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Type your email ID',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 0.0127551020408163 * screenHeight,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
                     contentPadding: EdgeInsets.only(
                         left: 0.0360416666666667 * screenWidth,
                         right: 0.0260416666666667 * screenWidth,
-                        bottom: 0.0216836734693878 * screenHeight),
+                        bottom: 0.0166836734693878 * screenHeight),
                     border: InputBorder.none,
                   ),
                 ),
@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextField(
                   obscureText: true,
                   style: GoogleFonts.dmSans(
-                    fontSize: 0.0153061224489796 * screenHeight,
+                    fontSize: 12,
                     fontWeight: FontWeight.w300,
                     color: Colors.black,
                   ),
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     contentPadding: EdgeInsets.only(
                         left: 0.0360416666666667 * screenWidth,
                         right: 0.0260416666666667 * screenWidth,
-                        bottom: 0.0156836734693878 * screenHeight),
+                        bottom: 0.0166836734693878 * screenHeight),
                     border: InputBorder.none,
                   ),
                 ),

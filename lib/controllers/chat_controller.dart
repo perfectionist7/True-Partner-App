@@ -17,7 +17,12 @@ class ChatsController extends GetxController {
   var ques2 = "What is your favourite colour?";
 
   List<List<String>> questionSet = [];
-  var set1 = ["I am Happy", "I am Okay", "I am Sad"];
+  var set1 = [
+    "I am feeling happy today",
+    "I am feeling sad today",
+    "I am feeling angry today",
+    "I am feeling lucky today"
+  ];
   var set2 = ["Black", "Red", "Blue"];
 
   List<Map<String, String>> chats = [];
