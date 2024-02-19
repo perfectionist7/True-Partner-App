@@ -18,7 +18,7 @@ class ChatsController extends GetxController {
 
   List<List<String>> questionSet = [];
   var set1 = [
-    "I am feeling happy today",
+    "I am feeling happy today lets go and do something ",
     "I am feeling sad today",
     "I am feeling angry today",
     "I am feeling lucky today"

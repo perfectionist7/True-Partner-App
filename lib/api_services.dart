@@ -17,7 +17,8 @@ postData(content) async {
     'accept': 'application/json',
     'Content-Type': 'application/json'
   };
-  var data = jsonEncode({"name": content, "notes": ""});
+  var data = jsonEncode({"name": content});
+  print(content);
   var post = await http.post(url, headers: headers, body: data);
 
   try {

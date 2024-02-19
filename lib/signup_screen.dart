@@ -31,29 +31,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(top: 100, left: 24),
+                margin: EdgeInsets.only(
+                    top: (80 / 784) * screenHeight,
+                    left: (24 / 360) * screenWidth),
                 child: Text(
                   "Create an Account",
                   style: GoogleFonts.saira(
-                    fontSize: 30,
+                    fontSize: (30 / 784) * screenHeight,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xffFFFFFF),
                   ),
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(left: 24, top: 10),
+                  margin: EdgeInsets.only(
+                      left: (24 / 360) * screenWidth,
+                      top: (10 / 784) * screenHeight),
                   child: Text(
                     "Chat with an Assistant!",
                     style: GoogleFonts.dmSans(
-                      fontSize: 16,
+                      fontSize: (16 / 784) * screenHeight,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xffFFFFFF),
                     ),
                   )),
               Container(
                 margin: EdgeInsets.only(
-                  left: 24,
+                  left: (24 / 360) * screenWidth,
                   top: 0.0701530612244898 * screenHeight,
                 ),
                 height: 0.0229591836734694 * screenHeight,
@@ -61,22 +65,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Text(
                   'Your Name',
                   style: GoogleFonts.dmSans(
-                    fontSize: 14,
+                    fontSize: (14 / 784) * screenHeight,
                     fontWeight: FontWeight.w300,
                     color: Colors.white,
                   ),
                 ),
               ),
               Container(
-                height: 34,
+                height: (34 / 784) * screenHeight,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                margin: EdgeInsets.only(top: 8, left: 24, right: 24),
+                margin: EdgeInsets.only(
+                    top: (8 / 784) * screenHeight,
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth),
                 child: TextField(
                   style: GoogleFonts.dmSans(
-                    fontSize: 12,
+                    fontSize: (12 / 784) * screenHeight,
                     fontWeight: FontWeight.w300,
                     color: Colors.black,
                   ),
@@ -86,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Type your name',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 12,
+                      fontSize: (12 / 784) * screenHeight,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
@@ -100,27 +107,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               Container(
                 margin: EdgeInsets.only(
-                  left: 24,
-                  top: 15,
+                  left: (24 / 360) * screenWidth,
+                  top: (15 / 784) * screenHeight,
                 ),
                 height: 0.0229591836734694 * screenHeight,
                 width: 0.265625 * screenWidth,
                 child: Text(
                   'E-mail ID',
                   style: GoogleFonts.dmSans(
-                    fontSize: 14,
+                    fontSize: (14 / 784) * screenHeight,
                     fontWeight: FontWeight.w300,
                     color: Colors.white,
                   ),
                 ),
               ),
               Container(
-                height: 34,
+                height: (34 / 784) * screenHeight,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                margin: EdgeInsets.only(top: 8, left: 24, right: 24),
+                margin: EdgeInsets.only(
+                    top: (8 / 784) * screenHeight,
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth),
                 child: TextField(
                   style: GoogleFonts.dmSans(
                     fontSize: 0.0153061224489796 * screenHeight,
@@ -133,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Type your email ID',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 12,
+                      fontSize: (12 / 784) * screenHeight,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
@@ -147,27 +157,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               Container(
                 margin: EdgeInsets.only(
-                  left: 24,
-                  top: 15,
+                  left: (24 / 360) * screenWidth,
+                  top: (15 / 784) * screenHeight,
                 ),
                 height: 0.0229591836734694 * screenHeight,
                 width: 0.265625 * screenWidth,
                 child: Text(
                   'Password',
                   style: GoogleFonts.dmSans(
-                    fontSize: 14,
+                    fontSize: (14 / 784) * screenHeight,
                     fontWeight: FontWeight.w300,
                     color: Colors.white,
                   ),
                 ),
               ),
               Container(
-                height: 34,
+                height: (34 / 784) * screenHeight,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                margin: EdgeInsets.only(top: 8, left: 24, right: 24),
+                margin: EdgeInsets.only(
+                    top: (8 / 784) * screenHeight,
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth),
                 child: TextField(
                   obscureText: true,
                   style: GoogleFonts.dmSans(
@@ -181,7 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     hintText: 'Create a password',
                     hintStyle: GoogleFonts.dmSans(
-                      fontSize: 12,
+                      fontSize: (12 / 784) * screenHeight,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff708090),
                     ),
@@ -194,8 +207,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 24, right: 24, top: 36),
-                height: 48,
+                margin: EdgeInsets.only(
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth,
+                    top: (36 / 784) * screenHeight),
+                height: (48 / 784) * screenHeight,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -214,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Text(
                         "Sign Up",
                         style: GoogleFonts.dmSans(
-                            fontSize: 14,
+                            fontSize: (14 / 784) * screenHeight,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
@@ -225,15 +241,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 36),
+                margin: EdgeInsets.only(top: (36 / 784) * screenHeight),
                 child: Image.asset(
                   "assets/images/divider.png",
                   width: context.screenWidth,
                 ),
               ),
               Container(
-                height: 48,
-                margin: EdgeInsets.only(left: 24, right: 24, top: 36),
+                height: (48 / 784) * screenHeight,
+                margin: EdgeInsets.only(
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth,
+                    top: (36 / 784) * screenHeight),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       // ignore: deprecated_member_use
@@ -251,7 +270,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Text(
                         "Sign in with Google",
                         style: GoogleFonts.dmSans(
-                            fontSize: 11,
+                            fontSize: (11 / 784) * screenHeight,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xff001F3F)),
                       ),
@@ -260,8 +279,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Container(
-                height: 48,
-                margin: EdgeInsets.only(left: 24, right: 24, top: 16),
+                height: (48 / 784) * screenHeight,
+                margin: EdgeInsets.only(
+                    left: (24 / 360) * screenWidth,
+                    right: (24 / 360) * screenWidth,
+                    top: (16 / 784) * screenHeight),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       // ignore: deprecated_member_use
@@ -279,7 +301,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Text(
                         "Sign in with Facebook",
                         style: GoogleFonts.dmSans(
-                            fontSize: 11,
+                            fontSize: (11 / 784) * screenHeight,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xff001F3F)),
                       ),
@@ -288,7 +310,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(80, 40, 70, 0),
+                margin: EdgeInsets.fromLTRB((60 / 360) * screenWidth,
+                    (25 / 784) * screenHeight, (20 / 360) * screenWidth, 0),
                 child: TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -303,7 +326,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextSpan(
                         text: 'Already have an account?',
                         style: GoogleFonts.dmSans(
-                          fontSize: 14,
+                          fontSize: (14 / 784) * screenHeight,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         )),
@@ -311,7 +334,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         text: ' Login',
                         style: GoogleFonts.dmSans(
                           fontWeight: FontWeight.w400,
-                          fontSize: 14,
+                          fontSize: (14 / 784) * screenHeight,
                           color: Color(0xFF4178F3),
                         ))
                   ])),
