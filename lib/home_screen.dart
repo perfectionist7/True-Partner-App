@@ -1,6 +1,7 @@
 import 'api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'check_question.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -15,6 +16,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var controller = Get.put(ChatsController());
+
+  @override
+  void initState() {
+    print(CheckQuestion.getAnswerFromKey("Hello"));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,8 +193,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderSide: BorderSide(color: Color(0xffFFDE59))),
                     suffixIcon: IconButton(
                         onPressed: () async {
-                          await postData(controller.msgController.text);
-                          setState(() {});
+                          String recog = CheckQuestion.getAnswerFromKey(
+                              controller.msgController.text);
+                          if (recog != "No option") {
+                            Map<String, String> sender = {};
+                            sender.addAll({
+                              "id": "0",
+                              "text": controller.msgController.text
+                            });
+                            controller.chats.add(sender);
+                            Map<String, String> reciever = {};
+                            reciever.addAll({"id": "1", "text": recog});
+                            controller.chats.add(reciever);
+                            setState(() {});
+                          } else {
+                            await postData(controller.msgController.text);
+                            setState(() {});
+                          }
                           controller.msgController.clear();
                         },
                         icon: Image(

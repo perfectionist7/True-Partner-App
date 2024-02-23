@@ -1,9 +1,11 @@
-import 'package:deevot_new_project/splashscreen.dart';
+import 'package:deevot_new_project/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'check_question.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CheckQuestion.fetchDataFromSpreadsheet();
   //await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: "sans_regular",
       ),
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
