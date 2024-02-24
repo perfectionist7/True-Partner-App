@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "546739261443",
+    "project_id": "true-partner-app-e1f90",
+    "storage_bucket": "true-partner-app-e1f90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546739261443:android:7784b6cdb7cfd0e18bfe36",
+        "android_client_info": {
+          "package_name": "com.devotai.deevot_new_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbgda_xzjG9FH-Had0NPuLDMrJ6HXJm5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

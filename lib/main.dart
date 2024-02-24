@@ -6,7 +6,7 @@ import 'check_question.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CheckQuestion.fetchDataFromSpreadsheet();
-  //await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

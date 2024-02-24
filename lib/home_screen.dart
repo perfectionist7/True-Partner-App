@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var controller = Get.put(ChatsController());
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -79,28 +80,60 @@ class _HomeScreenState extends State<HomeScreen> {
                               .make(),
                         )
                       : ListView.builder(
+                          controller: _scrollController,
                           physics: const BouncingScrollPhysics(
                               parent: AlwaysScrollableScrollPhysics()),
                           itemCount: controller.chats.length,
                           itemBuilder: (BuildContext context, int index) {
                             Map<String, String> data = controller.chats[index];
-                            return Container(
-                                margin: EdgeInsets.only(
-                                    top: (10 / 784) * screenHeight,
-                                    left: (10 / 360) * screenWidth,
-                                    right: (10 / 360) * screenWidth),
-                                child: Align(
-                                    alignment: data["id"] ==
-                                            "0" //id=0 is for the user, 1 for chatbot
-                                        ? Alignment.centerRight
+                            final EdgeInsets padding =
+                                index == controller.chats.length
+                                    ? EdgeInsets.only(
+                                        top: (10 / 784) * screenHeight,
+                                        left: data["id"] == "0"
+                                            ? (100 / 360) * screenWidth
+                                            : (5 / 360) * screenHeight,
+                                        right: data["id"] == "0"
+                                            ? (10 / 360) * screenWidth
+                                            : (40 / 360) * screenHeight,
+                                      ) // Apply padding to the last item
+                                    : EdgeInsets.only(
+                                        bottom: (15 / 784) * screenHeight,
+                                        left: data["id"] == "0"
+                                            ? (100 / 360) * screenWidth
+                                            : (5 / 360) * screenHeight,
+                                        right: data["id"] == "0"
+                                            ? (10 / 360) * screenWidth
+                                            : (40 / 360) * screenHeight,
+                                      );
+                            return Padding(
+                              padding: padding,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: data["id"] == "0"
+                                      ? Color(0xff86A7FC)
+                                      : Color(0xff001F3F),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Align(
+                                    alignment: data["id"] == "0"
+                                        ? Alignment.centerLeft
                                         : Alignment.centerLeft,
                                     child: Text(
                                       data["text"]!,
                                       style: GoogleFonts.dmSans(
-                                          fontSize: (14 / 784) * screenHeight,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black),
-                                    )));
+                                        fontSize: (14 / 784) * screenHeight,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ))),
           SizedBox(
@@ -210,6 +243,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             await postData(controller.msgController.text);
                             setState(() {});
                           }
+                          FocusScope.of(context).unfocus();
+                          // Scroll to the bottom of the ListView
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
                           controller.msgController.clear();
                         },
                         icon: Image(
