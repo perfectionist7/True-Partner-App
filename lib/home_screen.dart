@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             Map<String, String> data = controller.chats[index];
                             final EdgeInsets padding =
-                                index == controller.chats.length
+                                index == controller.chats.length - 1
                                     ? EdgeInsets.only(
                                         top: (10 / 784) * screenHeight,
                                         left: data["id"] == "0"
@@ -96,9 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         right: data["id"] == "0"
                                             ? (10 / 360) * screenWidth
                                             : (40 / 360) * screenHeight,
+                                        bottom: (15 / 784) * screenHeight,
                                       ) // Apply padding to the last item
                                     : EdgeInsets.only(
-                                        bottom: (15 / 784) * screenHeight,
+                                        top: (15 / 784) * screenHeight,
                                         left: data["id"] == "0"
                                             ? (100 / 360) * screenWidth
                                             : (5 / 360) * screenHeight,
@@ -111,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: data["id"] == "0"
-                                      ? Color(0xff86A7FC)
+                                      ? Color(0xff7F4BE8)
                                       : Color(0xff001F3F),
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(12)),
