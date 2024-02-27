@@ -12,7 +12,12 @@
           "package_name": "com.devotai.deevot_new_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "546739261443-vh4u6chsgb9lei62b2dkjidbvmlo4o2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAbgda_xzjG9FH-Had0NPuLDMrJ6HXJm5E"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "546739261443-vh4u6chsgb9lei62b2dkjidbvmlo4o2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

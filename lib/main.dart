@@ -2,11 +2,13 @@ import 'package:deevot_new_project/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'check_question.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CheckQuestion.fetchDataFromSpreadsheet();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

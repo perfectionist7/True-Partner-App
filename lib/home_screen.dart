@@ -172,25 +172,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onTap: () {
-                        setState(() {
-                          Map<String, String> sender = {
+                      onTap: () async {
+                        String recog = CheckQuestion.getAnswerFromKey(
+                            controller.questionSet[controller.index][index]);
+                        if (recog != "No option") {
+                          Map<String, String> sender = {};
+                          sender.addAll({
                             "id": "0",
                             "text": controller.questionSet[controller.index]
-                                [index],
-                          };
+                                [index]
+                          });
                           controller.chats.add(sender);
+                          setState(() {});
+                          Map<String, String> reciever = {};
+                          reciever.addAll({"id": "1", "text": recog});
+                          controller.chats.add(reciever);
+                          setState(() {});
+                        } else {
+                          await postData(
+                              controller.questionSet[controller.index][index]);
+                          setState(() {});
+                        }
 
-                          if (controller.index <
-                              controller.questions.length - 1) {
-                            controller.index += 1;
-                            Map<String, String> receiver = {
-                              "id": "1",
-                              "text": controller.questions[controller.index],
-                            };
-                            controller.chats.add(receiver);
-                          }
-                        });
+                        _scrollController.animateTo(
+                          _scrollController.position.maxScrollExtent,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        );
+                        controller.msgController.clear();
                       },
                     ),
                   ),
@@ -236,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               "text": controller.msgController.text
                             });
                             controller.chats.add(sender);
+                            setState(() {});
                             Map<String, String> reciever = {};
                             reciever.addAll({"id": "1", "text": recog});
                             controller.chats.add(reciever);
