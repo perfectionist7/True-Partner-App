@@ -1,8 +1,10 @@
 import 'api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/scheduler.dart';
 import 'check_question.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'controllers/chat_controller.dart';
@@ -24,6 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  void clearChatData() {
+    controller.chats.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -40,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                     color: Colors.white,
-                    onPressed: () {
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      clearChatData();
                       Get.back();
                     },
                     icon: const Icon(
@@ -138,17 +147,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ))),
           SizedBox(
-            height: (80 / 784) * screenHeight, // Adjust the height as needed
+            height: (95 / 784) * screenHeight, // Adjust the height as needed
             child: ListView.builder(
               scrollDirection:
                   Axis.horizontal, // Set the scroll direction to horizontal
-              itemCount: controller.questionSet[controller.index].length,
+              itemCount: controller.questionSet.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   width: (MediaQuery.of(context).size.width -
                           (60 / 360) * screenWidth) /
                       1.25, // Divide width equally between items with padding
-                  margin: const EdgeInsets.fromLTRB(15, 0, 5, 20),
+                  margin: const EdgeInsets.fromLTRB(15, 5, 5, 10),
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -165,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         5, 5, 0, 10), // Increased bottom padding
                     child: ListTile(
                       title: Text(
-                        controller.questionSet[controller.index][index],
+                        controller.questionSet[index],
                         style: GoogleFonts.dmSans(
                           fontSize: (13 / 784) * screenHeight,
                           color: Colors.black,
@@ -173,33 +182,40 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       onTap: () async {
-                        String recog = CheckQuestion.getAnswerFromKey(
-                            controller.questionSet[controller.index][index]);
+                        String text = controller.questionSet[index];
+                        Map<String, String> sender = {};
+                        sender.addAll({"id": "0", "text": text});
+                        sender.addAll({
+                          "id": "0",
+                          "text": text,
+                        });
+                        controller.chats.add(sender);
+                        SchedulerBinding.instance!.addPostFrameCallback((_) {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        });
+                        controller.msgController.clear();
+                        setState(() {});
+
+                        String recog = CheckQuestion.getAnswerFromKey(text);
                         if (recog != "No option") {
-                          Map<String, String> sender = {};
-                          sender.addAll({
-                            "id": "0",
-                            "text": controller.questionSet[controller.index]
-                                [index]
-                          });
-                          controller.chats.add(sender);
-                          setState(() {});
                           Map<String, String> reciever = {};
                           reciever.addAll({"id": "1", "text": recog});
                           controller.chats.add(reciever);
-                          setState(() {});
                         } else {
-                          await postData(
-                              controller.questionSet[controller.index][index]);
-                          setState(() {});
+                          await postData(text);
                         }
-
-                        _scrollController.animateTo(
-                          _scrollController.position.maxScrollExtent,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        );
-                        controller.msgController.clear();
+                        SchedulerBinding.instance!.addPostFrameCallback((_) {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        });
+                        setState(() {});
                       },
                     ),
                   ),
@@ -236,32 +252,49 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderSide: BorderSide(color: Color(0xffFFDE59))),
                     suffixIcon: IconButton(
                         onPressed: () async {
-                          String recog = CheckQuestion.getAnswerFromKey(
-                              controller.msgController.text);
+                          String text = controller.msgController.text;
+                          Map<String, String> sender = {};
+                          sender.addAll({"id": "0", "text": text});
+                          sender.addAll({
+                            "id": "0",
+                            "text": text,
+                          });
+                          controller.chats.add(sender);
+                          FocusScope.of(context).unfocus();
+                          SchedulerBinding.instance!.addPostFrameCallback((_) {
+                            _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          });
+                          controller.msgController.clear();
+                          setState(() {});
+
+                          String recog = CheckQuestion.getAnswerFromKey(text);
                           if (recog != "No option") {
-                            Map<String, String> sender = {};
-                            sender.addAll({
-                              "id": "0",
-                              "text": controller.msgController.text
-                            });
-                            controller.chats.add(sender);
-                            setState(() {});
                             Map<String, String> reciever = {};
                             reciever.addAll({"id": "1", "text": recog});
                             controller.chats.add(reciever);
-                            setState(() {});
+                            FocusScope.of(context).unfocus();
+                            // Scroll to the bottom of the ListView
+                            _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
                           } else {
-                            await postData(controller.msgController.text);
-                            setState(() {});
+                            await postData(text);
                           }
-                          FocusScope.of(context).unfocus();
-                          // Scroll to the bottom of the ListView
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                          controller.msgController.clear();
+
+                          SchedulerBinding.instance!.addPostFrameCallback((_) {
+                            _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          });
+                          setState(() {});
                         },
                         icon: Image(
                           image:
