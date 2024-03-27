@@ -6,6 +6,7 @@ import 'check_question.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'drawer_content.dart';
 
 import 'controllers/chat_controller.dart';
 
@@ -17,12 +18,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isDrawerOpen = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var controller = Get.put(ChatsController());
   ScrollController _scrollController = ScrollController();
+  List<String> options = [];
 
   @override
   void initState() {
-    print(CheckQuestion.getAnswerFromKey("Hello"));
     super.initState();
   }
 
@@ -36,42 +39,70 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xff001F3F),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                IconButton(
-                    color: Colors.white,
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      clearChatData();
-                      Get.back();
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      size: 24,
-                    )),
-                Text(
-                  "Back",
-                  style: GoogleFonts.raleway(
-                      fontSize: (16 / 784) * screenHeight,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600),
-                )
-              ],
+        actions: [
+          Container(
+            // padding: EdgeInsets.only(
+            //   left: (10 / 411.42857142857144) * screenWidth,
+            // ), // Add some margin here
+            margin: EdgeInsets.only(right: 230),
+            child: IconButton(
+              icon: Icon(
+                Icons.menu_sharp,
+                size: 30,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                setState(() {
+                  _scaffoldKey.currentState?.openDrawer();
+                });
+              },
             ),
-            Image.asset(
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 20),
+            child: Image.asset(
               "assets/images/app_bar_end_icon.png",
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
+        // title: Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.start,
+        //   children: [
+        //     IconButton(
+        //         color: Colors.white,
+        //         // onPressed: () async {
+        //         //   await FirebaseAuth.instance.signOut();
+        //         //   clearChatData();
+        //         //   Get.back();
+        //         // },
+        //         icon: const Icon(
+        //           Icons.menu_rounded,
+        //           size: 30,
+        //         )),
+        //     // Text(
+        //     //   "Back",
+        //     //   style: GoogleFonts.raleway(
+        //     //       fontSize: (16 / 784) * screenHeight,
+        //     //       color: Colors.white,
+        //     //       fontWeight: FontWeight.w600),
+        //     // ),
+        //   ],
+        // ),
       ),
       backgroundColor: Colors.white,
+      drawer: Container(
+        width: 240,
+        child: Drawer(
+          child: DrawerContent(),
+        ),
+      ),
       body: Column(
         children: [
           Obx(() => controller.isloading.value
@@ -205,6 +236,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           Map<String, String> reciever = {};
                           reciever.addAll({"id": "1", "text": recog});
                           controller.chats.add(reciever);
+                          options = CheckQuestion.getOptionsFromKey(text);
+
+                          controller.questionSet = options;
+                          setState(() {});
+                          options.clear();
                         } else {
                           await postData(text);
                         }
@@ -215,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             curve: Curves.easeOut,
                           );
                         });
+
                         setState(() {});
                       },
                     ),
@@ -283,6 +320,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               duration: Duration(milliseconds: 300),
                               curve: Curves.easeOut,
                             );
+                            print(text);
+                            print(CheckQuestion.getOptionsFromKey(text));
+                            options = CheckQuestion.getOptionsFromKey(text);
+                            // print("options are $options");
+                            print(options);
+                            controller.questionSet = options;
+                            setState(() {});
+                            options.clear();
                           } else {
                             await postData(text);
                           }

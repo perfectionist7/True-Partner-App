@@ -18,7 +18,7 @@ class CheckQuestion {
     const spreadsheetId = "1LbJke7ajYFi0TDyEeG7XrRzyse8Au0dkLEOaiYrQtaA";
 
     // The range of cells you want to read from (e.g., "Sheet1!A2:B")
-    const range = "Sheet1!A2:E";
+    const range = "Sheet1!A2:F";
 
     try {
       var response = await sheets.SheetsApi(client)
@@ -37,7 +37,8 @@ class CheckQuestion {
             final String value2 = row[2] as String;
             final String value3 = row[3] as String;
             final String value4 = row[4] as String;
-            checkQuestion[key] = [value1, value2, value3, value4];
+            final String value5 = row[5] as String;
+            checkQuestion[key] = [value1, value2, value3, value4, value5];
             print("Value is: $value1");
             print("Value is: $value2");
             print("Value is: $value3");
@@ -67,9 +68,11 @@ class CheckQuestion {
   }
 
   static List<String> getOptionsFromKey(String key) {
-    answers[0] = checkQuestion[key]?[1] ?? "No option";
-    answers[1] = checkQuestion[key]?[2] ?? "No option";
-    answers[2] = checkQuestion[key]?[3] ?? "No option";
+    List<String> answers = [];
+    answers.add(checkQuestion[key]?[1] ?? "No option");
+    answers.add(checkQuestion[key]?[2] ?? "No option");
+    answers.add(checkQuestion[key]?[3] ?? "No option");
+    answers.add(checkQuestion[key]?[4] ?? "No option");
     return answers;
   }
 
@@ -87,7 +90,7 @@ class CheckQuestion {
     try {
       // Find the row where the key is present
       const sheet = "Sheet1";
-      const range = "$sheet!A2:E"; // Assuming data is in columns A, B, and C
+      const range = "$sheet!A2:F"; // Assuming data is in columns A, B, and C
       var response = await sheets.SheetsApi(client)
           .spreadsheets
           .values
@@ -96,7 +99,7 @@ class CheckQuestion {
       if (response.values != null && response.values!.isNotEmpty) {
         for (var i = 0; i < response.values!.length; i++) {
           final row = response.values![i];
-          if (row.length >= 4 && row[0] == key) {
+          if (row.length >= 5 && row[0] == key) {
             // Update the D column (index 3) in the corresponding row
             final newValue = value;
             final updateRange =
@@ -136,7 +139,7 @@ class CheckQuestion {
     try {
       // Find the row where the key is present
       const sheet = "Sheet1";
-      const range = "$sheet!A2:E"; // Assuming data is in columns A, B, and C
+      const range = "$sheet!A2:F"; // Assuming data is in columns A, B, and C
       var response = await sheets.SheetsApi(client)
           .spreadsheets
           .values
