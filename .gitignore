@@ -10,6 +10,7 @@
 .svn/
 migrate_working_dir/
 lib/app/google-services.json
+assets/true-partner-app-415205-ae667a16716b.json
 
 # IntelliJ related
 *.iml
