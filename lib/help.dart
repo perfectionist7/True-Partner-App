@@ -91,7 +91,7 @@ class _Help_ScreenState extends State<Help_Screen> {
                   Container(
                     margin: EdgeInsets.only(top: 50),
                     child: Image.asset(
-                      "assets/images/devotai_logo.png",
+                      "assets/images/app_bar_end_icon.png",
                       scale: 0.4,
                       height: screenHeight * 0.1,
                       width: screenWidth * 0.3,

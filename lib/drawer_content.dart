@@ -1,5 +1,7 @@
+import 'package:deevot_new_project/editprofile.dart';
 import 'package:deevot_new_project/help.dart';
 import 'package:deevot_new_project/home_screen.dart';
+import 'profile_page.dart';
 import 'package:deevot_new_project/login_screen.dart';
 
 import 'package:flutter/material.dart';
@@ -42,7 +44,7 @@ class _DrawerContentState extends State<DrawerContent> {
     double screenHeight = MediaQuery.of(context).size.height;
     print(screenHeight);
     return Container(
-      color: Color(0xff001F3F),
+      color: Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -50,7 +52,7 @@ class _DrawerContentState extends State<DrawerContent> {
             height: (250 / 784) * screenHeight,
             child: DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xff001F3F),
               ),
               child: Column(
                 children: [
@@ -63,7 +65,7 @@ class _DrawerContentState extends State<DrawerContent> {
                     child: IconButton(
                         icon: ImageIcon(
                           AssetImage('assets/images/sidebarcross.png'),
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -86,7 +88,7 @@ class _DrawerContentState extends State<DrawerContent> {
                       style: GoogleFonts.poppins(
                         fontSize: (16 / 784) * screenHeight,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                   )
@@ -106,7 +108,7 @@ class _DrawerContentState extends State<DrawerContent> {
               style: GoogleFonts.poppins(
                 fontSize: (16 / 784) * screenHeight,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: Color(0xff001F3F),
               ),
             ),
             onTap: () {
@@ -117,7 +119,7 @@ class _DrawerContentState extends State<DrawerContent> {
             },
           ),
           Divider(
-            color: Colors.white,
+            color: Color(0xff001F3F),
           ),
           ListTile(
             contentPadding: EdgeInsets.only(
@@ -131,18 +133,18 @@ class _DrawerContentState extends State<DrawerContent> {
               style: GoogleFonts.poppins(
                 fontSize: (16 / 784) * screenHeight,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: Color(0xff001F3F),
               ),
             ),
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfile()),
+              );
             },
           ),
           Divider(
-            color: Colors.white,
+            color: Color(0xff001F3F),
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
@@ -151,7 +153,7 @@ class _DrawerContentState extends State<DrawerContent> {
               style: GoogleFonts.poppins(
                 fontSize: (16 / 784) * screenHeight,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: Color(0xff001F3F),
               ),
             ),
             onTap: () {
@@ -162,7 +164,7 @@ class _DrawerContentState extends State<DrawerContent> {
             },
           ),
           Divider(
-            color: Colors.white,
+            color: Color(0xff001F3F),
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
@@ -175,7 +177,7 @@ class _DrawerContentState extends State<DrawerContent> {
               style: GoogleFonts.poppins(
                 fontSize: (16 / 784) * screenHeight,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: Color(0xff001F3F),
               ),
             ),
             onTap: () async {
@@ -193,7 +195,7 @@ class _DrawerContentState extends State<DrawerContent> {
             },
           ),
           Divider(
-            color: Colors.white,
+            color: Color(0xff001F3F),
           ),
         ],
       ),

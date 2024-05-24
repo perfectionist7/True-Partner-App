@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'check_question.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'editprofile.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: "sans_regular",
       ),
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }

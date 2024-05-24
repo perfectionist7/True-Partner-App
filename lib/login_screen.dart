@@ -1,3 +1,4 @@
+import 'package:deevot_new_project/information.dart';
 import 'package:deevot_new_project/signup_screen.dart';
 import 'package:deevot_new_project/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance.signInWithCredential(credential);
     print(userCredential.user?.displayName);
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(builder: (context) => InformationPage()),
     );
     showSpinner = false;
   }
@@ -315,7 +316,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         pref.setString("email", email);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => InformationPage()),
                         );
                         _passwordcontroller.clear();
                         _controller.clear();
@@ -453,7 +455,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()),
+                            builder: (context) => InformationPage()),
                       );
                       // _passwordcontroller.clear();
                       // _controller.clear();
