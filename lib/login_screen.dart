@@ -1,8 +1,10 @@
 import 'package:deevot_new_project/information.dart';
 import 'package:deevot_new_project/signup_screen.dart';
+import 'package:deevot_new_project/welcomescreen.dart';
 import 'package:deevot_new_project/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isCheck = false;
   var _controller = TextEditingController();
   var _passwordcontroller = TextEditingController();
@@ -35,6 +38,34 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordVisible = false;
   }
 
+  void _checkAuthentication() async {
+    // Check if user is signed in
+    User? user = _auth.currentUser;
+    if (user != null) {
+      // User is signed in, retrieve user's email
+      String userEmail = user.email ?? "";
+
+      // Retrieve flag from Firestore
+      DocumentSnapshot userDoc =
+          await _firestore.collection('newUsers').doc(userEmail).get();
+      bool flag = userDoc.exists ? userDoc.get('flag') ?? false : false;
+
+      // Navigate based on the flag
+      if (flag) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }
+    } else {
+      // User is not signed in, navigate to authentication screen
+      setState(() {
+        showSpinner = false;
+      });
+    }
+  }
+
   signInWithGoogle() async {
     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -47,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance.signInWithCredential(credential);
     print(userCredential.user?.displayName);
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => InformationPage()),
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
     );
     showSpinner = false;
   }
@@ -314,11 +345,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setString("email", email);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => InformationPage()),
-                        );
+
+                        _checkAuthentication();
                         _passwordcontroller.clear();
                         _controller.clear();
                         Fluttertoast.showToast(msg: 'Successfully Logged In!');
@@ -454,8 +482,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => InformationPage()),
+                        MaterialPageRoute(builder: (context) => SignUpScreen()),
                       );
                       // _passwordcontroller.clear();
                       // _controller.clear();

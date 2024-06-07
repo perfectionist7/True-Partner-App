@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:deevot_new_project/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'drawer_content.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,15 +19,24 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final _auth = FirebaseAuth.instance;
+  String? currentemail;
+  bool showSpinner = false;
   final _firestore = FirebaseFirestore.instance;
+  late final userData;
   String fullname = "";
+  String oldpass = "";
+  String newpass = "";
+  String reenterpass = "";
   File? _imageFile;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final userCollection = FirebaseFirestore.instance.collection("newUsers");
   String firstname = "";
   String lastname = "";
   late Future<String?> fullnamefuture;
   String? email;
   var _controller = TextEditingController();
   var _lastcontroller = TextEditingController();
+  var _controllernew = TextEditingController();
   final _fullnameController = TextEditingController();
   String password = '';
   var _passwordcontroller = TextEditingController();
@@ -43,12 +55,67 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
+  Future<void> deleteUserWithSubcollection(String? userEmail) async {
+    final userDocRef =
+        FirebaseFirestore.instance.collection('userCollection').doc(userEmail);
+    final subcollectionRef = userDocRef.collection('conversations');
+
+    // Get all documents in the subcollection
+    final subcollectionSnapshot = await subcollectionRef.get();
+
+    // Delete each document in the subcollection
+    for (var doc in subcollectionSnapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    // Finally, delete the main document
+    await userDocRef.delete();
+  }
+
+  getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+// Check if the user is signed in
+    if (user != null) {
+      email = user.email; // <-- Their email
+    } else {
+      email = "guest";
+    }
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance
+              .collection("newUsers")
+              .doc(currentUser?.email)
+              .get();
+
+      if (snapshot.exists) {
+        // Convert the Firestore data to a Map<String, dynamic>
+        userData = snapshot.data()!;
+        setState(() {});
+      } else {
+        // print("Document does not exist.");
+      }
+    } catch (e) {
+      // print("Error fetching user data: $e");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     profileImageUrlFuture = fetchProfileImageUrl();
     fullnamefuture = fetchFullName();
     _requestPermissions();
+    if (currentUser != null) {
+      getCurrentUser();
+      fetchUserData();
+      currentemail = currentUser?.email;
+    } else {
+      currentemail = "guest";
+    }
   }
 
   Future<String?> fetchFullName() async {
@@ -215,275 +282,327 @@ class _EditProfileState extends State<EditProfile> {
             child: DrawerContent(),
           ),
         ),
-        body: ListView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 30),
-                    child: FutureBuilder<String?>(
-                      future: profileImageUrlFuture,
+        body: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: ListView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(top: 30),
+                      child: FutureBuilder<String?>(
+                        future: profileImageUrlFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else {
+                            if (snapshot.hasError || snapshot.data == null) {
+                              return CircleAvatar(
+                                radius: 80,
+                                backgroundImage:
+                                    AssetImage("assets/images/profileimg.jpg"),
+                              );
+                            } else {
+                              return CircleAvatar(
+                                radius: 80,
+                                backgroundImage: NetworkImage(snapshot.data!),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 152, left: 210),
+                      child: IconButton(
+                        onPressed: () => _showOptionsDialog(context),
+                        icon: Image.asset('assets/images/editprofilecam.png'),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FutureBuilder<String?>(
+                      future: fullnamefuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return CircularProgressIndicator();
                         } else {
                           if (snapshot.hasError || snapshot.data == null) {
-                            return CircleAvatar(
-                              radius: 80,
-                              backgroundImage:
-                                  AssetImage("assets/images/profileimg.jpg"),
+                            return Container(
+                              margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                              child: TextField(
+                                readOnly: true,
+                                controller: _fullnameController,
+                                decoration: InputDecoration(
+                                  hintText: 'Not set yet',
+                                  hintStyle: GoogleFonts.dmSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff708090)),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(16, 18, 5, 15),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: Color(0xff6200EE), width: 1),
+                                  ),
+                                ),
+                              ),
                             );
                           } else {
-                            return CircleAvatar(
-                              radius: 80,
-                              backgroundImage: NetworkImage(snapshot.data!),
+                            return Container(
+                              margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                              child: TextField(
+                                readOnly: true,
+                                controller: _fullnameController,
+                                decoration: InputDecoration(
+                                  hintText: snapshot.data,
+                                  hintStyle: GoogleFonts.dmSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff708090),
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(16, 18, 19, 15),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Color(0xff6200EE),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Color(
+                                          0xff6200EE), // Change color to the desired border color
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             );
                           }
                         }
                       },
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 152, left: 210),
-                    child: IconButton(
-                      onPressed: () => _showOptionsDialog(context),
-                      icon: Image.asset('assets/images/editprofilecam.png'),
+                    Container(
+                      height: 53,
+                      width: 343,
+                      decoration: new BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 6,
+                              offset: const Offset(
+                                  0, 7), // changes position of shadow
+                            ),
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border:
+                              Border.all(color: Color(0xff6200EE), width: 1)),
+                      margin: EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: TextField(
+                        readOnly: true,
+                        controller: _passwordcontroller,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          // password = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: '$email',
+                          hintStyle: GoogleFonts.dmSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff708090)),
+                          contentPadding: EdgeInsets.fromLTRB(16, 18, 19, 15),
+                          border: InputBorder.none,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FutureBuilder<String?>(
-                    future: fullnamefuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else {
-                        if (snapshot.hasError || snapshot.data == null) {
-                          return Container(
-                            margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                            child: TextField(
-                              readOnly: true,
-                              controller: _fullnameController,
-                              decoration: InputDecoration(
-                                hintText: 'Not set yet',
-                                hintStyle: GoogleFonts.dmSans(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff708090)),
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(16, 18, 5, 15),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6200EE), width: 1),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                            child: TextField(
-                              readOnly: true,
-                              controller: _fullnameController,
-                              decoration: InputDecoration(
-                                hintText: snapshot.data,
-                                hintStyle: GoogleFonts.dmSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xff708090),
-                                ),
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(16, 18, 19, 15),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Color(0xff6200EE),
-                                    width: 1,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Color(
-                                        0xff6200EE), // Change color to the desired border color
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                  ),
-                  Container(
-                    height: 53,
-                    width: 343,
-                    decoration: new BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
-                            blurRadius: 6,
-                            offset: const Offset(
-                                0, 7), // changes position of shadow
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      margin: EdgeInsets.only(
+                          top: (50 / 784) * screenHeight,
+                          left: (26 / 384) * screenWidth,
+                          right: (26 / 384) * screenWidth),
+                      child: SizedBox(
+                        height: (50 / 784) * screenHeight,
+                        width: (350 / 384) * screenWidth,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            _showupdatedialog(context);
+                            // Fluttertoast.showToast(msg: "Updating information");
+                            // updateDetails();
+                            // Fluttertoast.showToast(
+                            //     msg: "Information updated successfully!");
+                          },
+                          child: Text(
+                            'Update Details +',
+                            style: GoogleFonts.poppins(
+                                fontSize: (16 / 784) * screenHeight,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xffF9FFFF)),
                           ),
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Color(0xff6200EE), width: 1)),
-                    margin: EdgeInsets.fromLTRB(25, 25, 25, 0),
-                    child: TextField(
-                      readOnly: true,
-                      controller: _passwordcontroller,
-                      keyboardType: TextInputType.name,
-                      onChanged: (value) {
-                        // password = value;
-                      },
-                      decoration: InputDecoration(
-                        hintText: '$email',
-                        hintStyle: GoogleFonts.dmSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff708090)),
-                        contentPadding: EdgeInsets.fromLTRB(16, 18, 19, 15),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                    ),
-                    margin: EdgeInsets.only(
-                        top: (50 / 784) * screenHeight,
-                        left: (26 / 384) * screenWidth,
-                        right: (26 / 384) * screenWidth),
-                    child: SizedBox(
-                      height: (50 / 784) * screenHeight,
-                      width: (350 / 384) * screenWidth,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          _showupdatedialog(context);
-                          // Fluttertoast.showToast(msg: "Updating information");
-                          // updateDetails();
-                          // Fluttertoast.showToast(
-                          //     msg: "Information updated successfully!");
-                        },
-                        child: Text(
-                          'Update Details +',
-                          style: GoogleFonts.poppins(
-                              fontSize: (16 / 784) * screenHeight,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xffF9FFFF)),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff6200EE),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff6200EE),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                    ),
-                    margin: EdgeInsets.only(
-                        top: (30 / 784) * screenHeight,
-                        left: (26 / 384) * screenWidth,
-                        right: (26 / 384) * screenWidth),
-                    child: SizedBox(
-                      height: (50 / 784) * screenHeight,
-                      width: (350 / 384) * screenWidth,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Fluttertoast.showToast(msg: "Updating information");
-                          updateDetails();
-                          Fluttertoast.showToast(
-                              msg: "Information updated successfully!");
-                        },
-                        child: Text(
-                          'Change Password',
-                          style: GoogleFonts.poppins(
-                              fontSize: (16 / 784) * screenHeight,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xffF9FFFF)),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff6200EE),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                      ),
+                      margin: EdgeInsets.only(
+                          top: (30 / 784) * screenHeight,
+                          left: (26 / 384) * screenWidth,
+                          right: (26 / 384) * screenWidth),
+                      child: SizedBox(
+                        height: (50 / 784) * screenHeight,
+                        width: (350 / 384) * screenWidth,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            _showchangepassworddialog(context);
+                          },
+                          child: Text(
+                            'Change Password',
+                            style: GoogleFonts.poppins(
+                                fontSize: (16 / 784) * screenHeight,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xffF9FFFF)),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff6200EE),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                    ),
-                    margin: EdgeInsets.only(
-                        top: (30 / 784) * screenHeight,
-                        left: (26 / 384) * screenWidth,
-                        right: (26 / 384) * screenWidth),
-                    child: SizedBox(
-                      height: (50 / 784) * screenHeight,
-                      width: (350 / 384) * screenWidth,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Fluttertoast.showToast(msg: "Updating information");
-                          updateDetails();
-                          Fluttertoast.showToast(
-                              msg: "Information updated successfully!");
-                        },
-                        child: Text(
-                          'Delete Profile',
-                          style: GoogleFonts.poppins(
-                              fontSize: (16 / 784) * screenHeight,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff6200EE),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
                         ),
                       ),
+                      margin: EdgeInsets.only(
+                          top: (30 / 784) * screenHeight,
+                          left: (26 / 384) * screenWidth,
+                          right: (26 / 384) * screenWidth),
+                      child: SizedBox(
+                        height: (50 / 784) * screenHeight,
+                        width: (350 / 384) * screenWidth,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (currentemail == "guest") {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "You must be logged in to delete your account!");
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete your Account?'),
+                                    content: const Text(
+                                        '''If you select Delete we will delete your account on our server.\n\nYour app data will also be deleted and you won't be able to retrieve it.\n\nSelect delete if you wish to proceed.'''),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text(
+                                          'Delete',
+                                        ),
+                                        onPressed: () async {
+                                          setState(() {
+                                            showSpinner = true;
+                                          });
+                                          await deleteUserWithSubcollection(
+                                              currentemail);
+                                          await deleteUserAccount();
+                                          SharedPreferences pref =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          pref.remove("email");
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  'Your account has been deleted successfully!');
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginScreen()),
+                                          );
+                                          setState(() {
+                                            showSpinner = false;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                            ;
+                          },
+                          child: Text(
+                            'Delete Profile',
+                            style: GoogleFonts.poppins(
+                                fontSize: (16 / 784) * screenHeight,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff6200EE),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                      ),
+                      // ),
+                      // Container(
+                      //   alignment: Alignment.centerLeft,
+                      //   margin: EdgeInsets.fromLTRB(
+                      //       (40 / 411.42857142857144) * screenWidth, 10, 0, 0),
+                      //   padding: const EdgeInsets.all(1),
+                      //   child: IconButton(
+                      //     icon: const Icon(
+                      //       Icons.arrow_back_ios_rounded,
+                      //       color: Color(0xff001F3F),
+                      //     ),
+                      //     iconSize: screenWidth * 0.08,
+                      //     onPressed: () {
+                      //       Navigator.pop(context);
+                      //     },
+                      //   ),
+                      // ),
                     ),
-                    // ),
-                    // Container(
-                    //   alignment: Alignment.centerLeft,
-                    //   margin: EdgeInsets.fromLTRB(
-                    //       (40 / 411.42857142857144) * screenWidth, 10, 0, 0),
-                    //   padding: const EdgeInsets.all(1),
-                    //   child: IconButton(
-                    //     icon: const Icon(
-                    //       Icons.arrow_back_ios_rounded,
-                    //       color: Color(0xff001F3F),
-                    //     ),
-                    //     iconSize: screenWidth * 0.08,
-                    //     onPressed: () {
-                    //       Navigator.pop(context);
-                    //     },
-                    //   ),
-                    // ),
-                  ),
-                ],
-              ),
-            ]),
+                  ],
+                ),
+              ]),
+        ),
       ),
     );
   }
@@ -494,185 +613,471 @@ class _EditProfileState extends State<EditProfile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          margin: EdgeInsets.only(top: 210, bottom: 110),
-          child: AlertDialog(
-            contentPadding:
-                EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 20),
-            backgroundColor: Colors.white,
-            title: Container(
-              margin: EdgeInsets.only(top: 15, left: 0),
-              child: Text(
-                'Update Details',
-                style: GoogleFonts.saira(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff001F3E)),
-              ),
-            ),
-            content: Column(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 15),
-                  child: Text(
-                    "First Name",
-                    style: GoogleFonts.saira(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff344054),
-                    ),
+        return ListView(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 210, bottom: 110),
+              child: AlertDialog(
+                contentPadding:
+                    EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 20),
+                backgroundColor: Colors.white,
+                title: Container(
+                  margin: EdgeInsets.only(top: 5, left: 0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Update Details',
+                        style: GoogleFonts.saira(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff001F3E)),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 75),
+                        child: IconButton(
+                          icon: Image.asset('assets/images/closedialog.png'),
+                          iconSize: 24.0, // You can adjust the size as needed
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          style: BorderStyle.solid, color: Color(0xff6200EE))),
-                  margin: EdgeInsets.only(
-                      top: (10 / 784) * screenHeight,
-                      left: (12 / 360) * screenWidth,
-                      right: (0 / 360) * screenWidth),
-                  child: TextField(
-                    controller: _controller,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) {
-                      firstname = value;
-                    },
-                    style: GoogleFonts.saira(
-                      fontSize: (14 / 784) * screenHeight,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff667085),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Your First Name',
-                      hintStyle: GoogleFonts.saira(
-                        fontSize: (14 / 784) * screenHeight,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff667085),
-                      ),
-                      contentPadding: EdgeInsets.only(
-                        left: 0.0360416666666667 * screenWidth,
-                        right: 0.0260416666666667 * screenWidth,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 15),
-                  child: Text(
-                    "Last Name",
-                    style: GoogleFonts.saira(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff344054),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          style: BorderStyle.solid, color: Color(0xff6200EE))),
-                  margin: EdgeInsets.only(
-                      top: (10 / 784) * screenHeight,
-                      left: (10 / 360) * screenWidth,
-                      right: (0 / 360) * screenWidth),
-                  child: TextField(
-                    controller: _lastcontroller,
-                    keyboardType: TextInputType.name,
-                    onChanged: (value) {
-                      lastname = value;
-                    },
-                    style: GoogleFonts.saira(
-                      fontSize: (14 / 784) * screenHeight,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff667085),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Your Last Name',
-                      hintStyle: GoogleFonts.saira(
-                        fontSize: (14 / 784) * screenHeight,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff667085),
-                      ),
-                      contentPadding: EdgeInsets.only(
-                        left: 0.0360416666666667 * screenWidth,
-                        right: 0.0260416666666667 * screenWidth,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                Row(
+                content: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.fromLTRB(15, 25, 10, 0),
-                      height: 50,
-                      width: 105,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            // print(fullname);
-                            // print(phonenumber);
-                            // print(email);
-                            // print(password);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const LoginPage()),
-                            // );
-                          },
-                          child: Text('Cancel',
-                              style: GoogleFonts.dmSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xff6750A4))),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffF3EDF7),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(
-                                  color: Color(0xffFFDE59), width: 1),
-                            ),
-                          )),
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(left: 15),
+                      child: Text(
+                        "First Name",
+                        style: GoogleFonts.saira(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff344054),
+                        ),
+                      ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(10, 25, 0, 0),
-                      height: 50,
-                      width: 105,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            // print(fullname);
-                            // print(phonenumber);
-                            // print(email);
-                            // print(password);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const LoginPage()),
-                            // );
-                          },
-                          child: Text('Save',
-                              style: GoogleFonts.dmSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff6200EE),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          )),
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: Color(0xff6200EE))),
+                      margin: EdgeInsets.only(
+                          top: (10 / 784) * screenHeight,
+                          left: (12 / 360) * screenWidth,
+                          right: (0 / 360) * screenWidth),
+                      child: TextField(
+                        controller: _controller,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          firstname = value;
+                        },
+                        style: GoogleFonts.saira(
+                          fontSize: (14 / 784) * screenHeight,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff667085),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Your First Name',
+                          hintStyle: GoogleFonts.saira(
+                            fontSize: (14 / 784) * screenHeight,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff667085),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 0.0360416666666667 * screenWidth,
+                            right: 0.0260416666666667 * screenWidth,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(left: 15),
+                      child: Text(
+                        "Last Name",
+                        style: GoogleFonts.saira(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff344054),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: Color(0xff6200EE))),
+                      margin: EdgeInsets.only(
+                          top: (10 / 784) * screenHeight,
+                          left: (10 / 360) * screenWidth,
+                          right: (0 / 360) * screenWidth),
+                      child: TextField(
+                        controller: _lastcontroller,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          lastname = value;
+                        },
+                        style: GoogleFonts.saira(
+                          fontSize: (14 / 784) * screenHeight,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff667085),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Your Last Name',
+                          hintStyle: GoogleFonts.saira(
+                            fontSize: (14 / 784) * screenHeight,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff667085),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 0.0360416666666667 * screenWidth,
+                            right: 0.0260416666666667 * screenWidth,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.fromLTRB(15, 25, 10, 0),
+                          height: 50,
+                          width: 105,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfile()),
+                                );
+                              },
+                              child: Text('Cancel',
+                                  style: GoogleFonts.dmSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff6750A4))),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xffF3EDF7),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                      color: Color(0xffFFDE59), width: 1),
+                                ),
+                              )),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10, 25, 0, 0),
+                          height: 50,
+                          width: 105,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                showSpinner = true;
+                                String actualfullname =
+                                    firstname + " " + lastname;
+                                Navigator.of(context).pop();
+                                Fluttertoast.showToast(
+                                    msg: "Updating Information");
+                                FirebaseFirestore.instance
+                                    .collection("newUsers")
+                                    .doc(email)
+                                    .set({
+                                  'firstname': firstname,
+                                  'lastname': lastname,
+                                  'fullname': actualfullname
+                                });
+
+                                Fluttertoast.showToast(
+                                    msg: "Information Updated Successfully!");
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfile()),
+                                );
+                                showSpinner = false;
+                              },
+                              child: Text('Save',
+                                  style: GoogleFonts.dmSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff6200EE),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      // Handle the result here
+      if (value != null) {
+        print("Selected Option: $value");
+      }
+    });
+  }
+
+  void _showchangepassworddialog(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(top: 210, bottom: 110),
+            child: AlertDialog(
+              contentPadding:
+                  EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 20),
+              backgroundColor: Colors.white,
+              title: Container(
+                margin: EdgeInsets.only(top: 15, left: 0),
+                child: Row(
+                  children: [
+                    Text(
+                      'Change Password',
+                      style: GoogleFonts.saira(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff001F3E)),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 50),
+                      child: IconButton(
+                        icon: Image.asset('assets/images/closedialog.png'),
+                        iconSize: 24.0, // You can adjust the size as needed
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
                   ],
-                )
-              ],
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: Color(0xff6200EE))),
+                      margin: EdgeInsets.only(
+                          top: (0 / 784) * screenHeight,
+                          left: (12 / 360) * screenWidth,
+                          right: (0 / 360) * screenWidth),
+                      child: TextField(
+                        obscureText: true,
+                        controller: _controller,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          oldpass = value;
+                        },
+                        style: GoogleFonts.dmSans(
+                          fontSize: (14 / 784) * screenHeight,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff708090),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Enter Old Password',
+                          hintStyle: GoogleFonts.dmSans(
+                            fontSize: (14 / 784) * screenHeight,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff708090),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 0.0360416666666667 * screenWidth,
+                            right: 0.0260416666666667 * screenWidth,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: Color(0xff6200EE))),
+                      margin: EdgeInsets.only(
+                          top: (10 / 784) * screenHeight,
+                          left: (12 / 360) * screenWidth,
+                          right: (0 / 360) * screenWidth),
+                      child: TextField(
+                        obscureText: true,
+                        controller: _lastcontroller,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          newpass = value;
+                        },
+                        style: GoogleFonts.dmSans(
+                          fontSize: (14 / 784) * screenHeight,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff708090),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Enter New Password',
+                          hintStyle: GoogleFonts.dmSans(
+                            fontSize: (14 / 784) * screenHeight,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff708090),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 0.0360416666666667 * screenWidth,
+                            right: 0.0260416666666667 * screenWidth,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: Color(0xff6200EE))),
+                      margin: EdgeInsets.only(
+                          top: (10 / 784) * screenHeight,
+                          left: (12 / 360) * screenWidth,
+                          right: (0 / 360) * screenWidth),
+                      child: TextField(
+                        obscureText: true,
+                        controller: _controllernew,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) {
+                          reenterpass = value;
+                        },
+                        style: GoogleFonts.dmSans(
+                          fontSize: (14 / 784) * screenHeight,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff708090),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Re-enter Password',
+                          hintStyle: GoogleFonts.dmSans(
+                            fontSize: (14 / 784) * screenHeight,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff708090),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 0.0360416666666667 * screenWidth,
+                            right: 0.0260416666666667 * screenWidth,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.fromLTRB(15, 25, 10, 0),
+                          height: 50,
+                          width: 105,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfile()),
+                                );
+                              },
+                              child: Text('Cancel',
+                                  style: GoogleFonts.dmSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff6750A4))),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xffF3EDF7),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                      color: Color(0xffFFDE59), width: 1),
+                                ),
+                              )),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10, 25, 0, 0),
+                          height: 50,
+                          width: 110,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                showSpinner = true;
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditProfile()));
+                                if (newpass != reenterpass) {
+                                  Fluttertoast.showToast(
+                                      msg: "Passwords do not match!");
+                                  showSpinner = false;
+                                  return;
+                                }
+                                AuthCredential credential =
+                                    EmailAuthProvider.credential(
+                                  email: email!,
+                                  password: oldpass,
+                                );
+
+                                try {
+                                  Fluttertoast.showToast(
+                                      msg: "Updating your password...");
+                                  // Attempt to reauthenticate the user
+                                  await FirebaseAuth.instance.currentUser!
+                                      .reauthenticateWithCredential(credential);
+
+                                  // If reauthentication is successful, proceed to change the password
+                                  await FirebaseAuth.instance.currentUser!
+                                      .updatePassword(newpass);
+                                  Fluttertoast.showToast(
+                                      msg: "Password updated successfully!");
+                                  showSpinner = false;
+                                } catch (e) {
+                                  // If reauthentication fails, handle the error
+                                  print("Error: $e");
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Failed to update password. Please check your old password and try again.");
+                                  showSpinner = false;
+                                }
+                              },
+                              child: Text('Update',
+                                  style: GoogleFonts.dmSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff6200EE),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         );
@@ -691,90 +1096,102 @@ class _EditProfileState extends State<EditProfile> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding:
-              EdgeInsets.only(left: 10, bottom: 20, top: 10, right: 10),
+              EdgeInsets.only(left: 10, bottom: 20, top: 10, right: 5),
           backgroundColor: Color(0xffF3EDF7),
-          title: Text(
-            'Upload image',
-            style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff1D1B20)),
-          ),
-          content: SingleChildScrollView(
-            child: Row(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop('Option 1');
+          title: Row(
+            children: [
+              Text(
+                'Upload image',
+                style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff1D1B20)),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 25),
+                child: IconButton(
+                  icon: Image.asset('assets/images/closedialog.png'),
+                  iconSize: 24.0, // You can adjust the size as needed
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ],
+          ),
+          content: Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop('Option 1');
+                },
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                  ),
+                  onPressed: () => _pickImage(ImageSource.gallery),
+                  child: Row(
+                    children: [
+                      Text(
+                        'From Device',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff6750A4),
+                        ),
                       ),
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                    ),
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                    child: Row(
-                      children: [
-                        Text(
-                          'From Device',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff6750A4),
-                          ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Image.asset(
+                          'assets/images/upload_icon.png', // Replace with your asset path
+                          color: Colors.black,
+                          height: 24,
+                          width: 24,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Image.asset(
-                            'assets/images/upload_icon.png', // Replace with your asset path
-                            color: Colors.black,
-                            height: 24,
-                            width: 24,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {},
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                  ),
+                  onPressed: () => _pickImage(ImageSource.camera),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Capture',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff6750A4),
+                        ),
                       ),
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                    ),
-                    onPressed: () => _pickImage(ImageSource.camera),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Capture',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff6750A4),
-                          ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Image.asset(
+                          'assets/images/editprofilecam.png', // Replace with your asset path
+                          color: Colors.black,
+                          height: 24,
+                          width: 24,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10),
-                          child: Image.asset(
-                            'assets/images/editprofilecam.png', // Replace with your asset path
-                            color: Colors.black,
-                            height: 24,
-                            width: 24,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -826,5 +1243,38 @@ class _EditProfileState extends State<EditProfile> {
       // You can add more fields to update here
     });
     print("after");
+  }
+
+  Future<void> deleteUserAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      } else {
+        // Handle other Firebase exceptions
+      }
+    } catch (e) {
+      // Handle general exception
+    }
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final providerData = currentUser.providerData;
+      if (providerData.isNotEmpty) {
+        if (AppleAuthProvider().providerId == providerData.first.providerId) {
+          await currentUser.reauthenticateWithProvider(AppleAuthProvider());
+        } else if (GoogleAuthProvider().providerId ==
+            providerData.first.providerId) {
+          await currentUser.reauthenticateWithProvider(GoogleAuthProvider());
+        }
+      } else {
+        print('no authenticatin provider');
+      }
+    } else {
+      print('not signed in');
+    }
   }
 }

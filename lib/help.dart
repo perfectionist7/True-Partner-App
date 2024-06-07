@@ -89,16 +89,16 @@ class _Help_ScreenState extends State<Help_Screen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 50),
+                    margin: EdgeInsets.only(top: 60),
                     child: Image.asset(
-                      "assets/images/app_bar_end_icon.png",
+                      "assets/images/aboutus_devotai.png",
                       scale: 0.4,
-                      height: screenHeight * 0.1,
+                      height: screenHeight * 0.2,
                       width: screenWidth * 0.3,
                     ),
                   ),
                   SizedBox(
-                    height: (30 / 890.2857142857143) * screenHeight,
+                    height: (10 / 890.2857142857143) * screenHeight,
                   ),
                   // Image.asset(
                   //   "assets/images/elevate_playtime.png",
@@ -180,7 +180,7 @@ class _Help_ScreenState extends State<Help_Screen> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (40 / 411.42857142857144) * screenWidth, 60, 0, 0),
+                    (40 / 411.42857142857144) * screenWidth, 0, 0, 0),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),

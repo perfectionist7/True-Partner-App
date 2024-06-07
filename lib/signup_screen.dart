@@ -432,6 +432,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .set({
         'fullname': fullname,
         'email': email,
+        'flag': true,
       });
       setState(() {
         showSpinner = false;
