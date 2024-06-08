@@ -47,12 +47,28 @@ class _Help_ScreenState extends State<Help_Screen> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color(0xff001F3F),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xff352980),
+                    Color(0xff604AE6),
+                    Color(0xff352980),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
+              ),
+            ),
             actions: [
               Container(
                 // padding: EdgeInsets.only(
                 //   left: (10 / 411.42857142857144) * screenWidth,
                 // ), // Add some margin here
-                margin: EdgeInsets.only(right: 230),
+                margin: EdgeInsets.only(right: 237),
                 child: IconButton(
                   icon: Icon(
                     Icons.menu_sharp,
@@ -67,12 +83,38 @@ class _Help_ScreenState extends State<Help_Screen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.only(right: 25),
                 child: Image.asset(
                   "assets/images/app_bar_end_icon.png",
                 ),
               ),
             ],
+            // title: Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   children: [
+            //     IconButton(
+            //         color: Colors.white,
+            //         // onPressed: () async {
+            //         //   await FirebaseAuth.instance.signOut();
+            //         //   clearChatData();
+            //         //   Get.back();
+            //         // },
+            //         icon: const Icon(
+            //           Icons.menu_rounded,
+            //           size: 30,
+            //         )),
+            //     // Text(
+            //     //   "Back",
+            //     //   style: GoogleFonts.raleway(
+            //     //       fontSize: (16 / 784) * screenHeight,
+            //     //       color: Colors.white,
+            //     //       fontWeight: FontWeight.w600),
+            //     // ),
+            //   ],
+            // ),
           ),
           backgroundColor: Colors.white,
           drawer: Container(

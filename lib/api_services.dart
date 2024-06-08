@@ -162,7 +162,7 @@ postConvo(content) async {
   }
 }
 
-postData(content) async {
+postData(content, currentconvo) async {
   String previousdiagnosis = "";
   Uri url = Uri.parse("$base/product_description");
   User? user = FirebaseAuth.instance.currentUser;
@@ -185,7 +185,7 @@ postData(content) async {
       previousdiagnosis += "$conversation" + "\n";
     }
   }
-
+  currentconvo = "Previous messages in this conversation: \n" + currentconvo;
   previousdiagnosis = "Previous conversation analysis: \n" + previousdiagnosis;
   String fullName = userData['fullname'] ?? 'Unknown';
   String feeling = userData['how_are_you_feeling_today'] ?? 'Unknown';
@@ -209,7 +209,8 @@ userinfo: User's Full Name: $fullName,Feeling Today: $feeling, Experiencing Anxi
     'Content-Type': 'application/json'
   };
   // Prepend the user's information to the content
-  var data = jsonEncode({"name": "$previousdiagnosis\n$userInfo\n$content"});
+  var data = jsonEncode(
+      {"name": "$previousdiagnosis\n$userInfo\n$currentconvo\n$content"});
   print(content);
   var post = await http.post(url, headers: headers, body: data);
   data = jsonEncode({"name": "$content"});

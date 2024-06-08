@@ -4,9 +4,11 @@ import 'api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'upload_feedback.dart';
 import 'package:flutter/scheduler.dart';
 import 'check_question.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -72,12 +74,28 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xff001F3F),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xff352980),
+                Color(0xff604AE6),
+                Color(0xff352980),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(8),
+            ),
+          ),
+        ),
         actions: [
           Container(
             // padding: EdgeInsets.only(
             //   left: (10 / 411.42857142857144) * screenWidth,
             // ), // Add some margin here
-            margin: EdgeInsets.only(right: 230),
+            margin: EdgeInsets.only(right: 237),
             child: IconButton(
               icon: Icon(
                 Icons.menu_sharp,
@@ -92,38 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: 20),
+            margin: EdgeInsets.only(right: 25),
             child: Image.asset(
               "assets/images/app_bar_end_icon.png",
             ),
           ),
         ],
-        // title: Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.start,
-        //   children: [
-        //     IconButton(
-        //         color: Colors.white,
-        //         // onPressed: () async {
-        //         //   await FirebaseAuth.instance.signOut();
-        //         //   clearChatData();
-        //         //   Get.back();
-        //         // },
-        //         icon: const Icon(
-        //           Icons.menu_rounded,
-        //           size: 30,
-        //         )),
-        //     // Text(
-        //     //   "Back",
-        //     //   style: GoogleFonts.raleway(
-        //     //       fontSize: (16 / 784) * screenHeight,
-        //     //       color: Colors.white,
-        //     //       fontWeight: FontWeight.w600),
-        //     // ),
-        //   ],
-        // ),
       ),
       backgroundColor: Colors.white,
       drawer: Container(
@@ -137,10 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             alignment: Alignment.centerLeft,
             margin: EdgeInsets.fromLTRB(
-                (222 / 411.42857142857144) * screenWidth, 0, 0, 0),
+                (10 / 411.42857142857144) * screenWidth, 5, 0, 0),
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.white, // Button colorcolor
+                backgroundColor: Color(0xff352980), // Button colorcolor
                 padding: EdgeInsets.symmetric(
                     horizontal: 24, vertical: 12), // Button padding
                 shape: RoundedRectangleBorder(
@@ -154,12 +146,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(builder: (context) => HomeScreen()),
                 );
-                Fluttertoast.showToast(msg: "Conversation Ended!");
+                Fluttertoast.showToast(
+                    msg: "Thanks for talking, here is a new chat!");
               },
               child: Text(
-                'End Conversation',
-                style: TextStyle(
-                    fontSize: 14, color: Color(0xff001F3F)), // Text size
+                'New Chat',
+                style:
+                    TextStyle(fontSize: 14, color: Colors.white), // Text size
               ),
             ),
           ),
@@ -172,11 +165,105 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : Expanded(
                     child: controller.chats.isEmpty
-                        ? Center(
-                            child: "Send a message..."
-                                .text
-                                .color(Colors.black)
-                                .make(),
+                        ? Container(
+                            margin: EdgeInsets.only(top: 80),
+                            child: SizedBox(
+                              height: (95 / 784) * screenHeight,
+                              child: ListView.builder(
+                                scrollDirection: Axis
+                                    .vertical, // Set the scroll direction to horizontal
+                                itemCount: controller.questionSet.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    width: (MediaQuery.of(context).size.width -
+                                            (60 / 360) * screenWidth) /
+                                        1.25, // Divide width equally between items with padding
+                                    margin: const EdgeInsets.fromLTRB(
+                                        50, 5, 50, 20),
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                      color: Color(0xffececec),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(5, 5,
+                                          0, 10), // Increased bottom padding
+                                      child: ListTile(
+                                        title: Text(
+                                          controller.questionSet[index],
+                                          style: GoogleFonts.dmSans(
+                                            fontSize: (13 / 784) * screenHeight,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          String text =
+                                              controller.questionSet[index];
+                                          Map<String, String> sender = {};
+                                          sender.addAll(
+                                              {"id": "0", "text": text});
+                                          sender.addAll({
+                                            "id": "0",
+                                            "text": text,
+                                          });
+                                          controller.chats.add(sender);
+                                          SchedulerBinding.instance!
+                                              .addPostFrameCallback((_) {
+                                            _scrollController.animateTo(
+                                              _scrollController
+                                                  .position.maxScrollExtent,
+                                              duration:
+                                                  Duration(milliseconds: 300),
+                                              curve: Curves.easeOut,
+                                            );
+                                          });
+                                          controller.msgController.clear();
+                                          setState(() {});
+
+                                          String recog =
+                                              CheckQuestion.getAnswerFromKey(
+                                                  text);
+                                          if (recog != "No option") {
+                                            Map<String, String> reciever = {};
+                                            reciever.addAll(
+                                                {"id": "1", "text": recog});
+                                            controller.chats.add(reciever);
+                                            options =
+                                                CheckQuestion.getOptionsFromKey(
+                                                    text);
+
+                                            controller.questionSet = options;
+                                            setState(() {});
+                                            options.clear();
+                                          } else {
+                                            await postData(text, currentconvo);
+                                          }
+                                          SchedulerBinding.instance!
+                                              .addPostFrameCallback((_) {
+                                            _scrollController.animateTo(
+                                              _scrollController
+                                                  .position.maxScrollExtent,
+                                              duration:
+                                                  Duration(milliseconds: 300),
+                                              curve: Curves.easeOut,
+                                            );
+                                          });
+
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           )
                         : ListView.builder(
                             controller: _scrollController,
@@ -187,15 +274,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               Map<String, String> data =
                                   controller.chats[index];
                               if (data["id"] == "0") {
-                                currentconvo = currentconvo! +
-                                    "user: " +
-                                    data["text"]! +
-                                    "\n";
+                                if (!currentconvo!.contains(data["text"]!)) {
+                                  currentconvo = currentconvo! +
+                                      "\n"
+                                          "user: " +
+                                      data["text"]! +
+                                      "\n";
+                                }
                               } else if (data["id"] == "1") {
-                                currentconvo = currentconvo! +
-                                    "assistant: " +
-                                    data["text"]! +
-                                    "\n";
+                                if (!currentconvo!.contains(data["text"]!)) {
+                                  currentconvo = currentconvo! +
+                                      "\n"
+                                          "assistant: " +
+                                      data["text"]! +
+                                      "\n";
+                                }
                               }
                               final EdgeInsets padding =
                                   index == controller.chats.length - 1
@@ -210,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           bottom: (15 / 784) * screenHeight,
                                         ) // Apply padding to the last item
                                       : EdgeInsets.only(
-                                          top: (15 / 784) * screenHeight,
+                                          top: (10 / 784) * screenHeight,
                                           left: data["id"] == "0"
                                               ? (100 / 360) * screenWidth
                                               : (5 / 360) * screenHeight,
@@ -220,118 +313,266 @@ class _HomeScreenState extends State<HomeScreen> {
                                         );
                               return Padding(
                                 padding: padding,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: data["id"] == "0"
-                                        ? Color(0xff7F4BE8)
-                                        : Color(0xff001F3F),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(12)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Align(
-                                      alignment: data["id"] == "0"
-                                          ? Alignment.centerLeft
-                                          : Alignment.centerLeft,
-                                      child: Text(
-                                        data["text"]!,
-                                        style: GoogleFonts.dmSans(
-                                          fontSize: (14 / 784) * screenHeight,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: data["id"] == "0"
+                                              ? Color(0xff7F4BE8)
+                                              : Color(0xff001F3F),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(12)),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Align(
+                                            alignment: data["id"] == "0"
+                                                ? Alignment.centerLeft
+                                                : Alignment.centerLeft,
+                                            child: Text(
+                                              data["text"]!,
+                                              style: GoogleFonts.dmSans(
+                                                fontSize:
+                                                    (14 / 784) * screenHeight,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    if (data["id"] == "1")
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 2.0), // Reduce top padding
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: IconButton(
+                                            icon: Icon(Icons.thumb_down,
+                                                color: Colors.blueGrey,
+                                                size: 20),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  double rating = 0.0;
+                                                  TextEditingController
+                                                      feedbackController =
+                                                      TextEditingController();
+                                                  return AlertDialog(
+                                                    title: Text('Feedback'),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                            'Please provide your feedback:'),
+                                                        SizedBox(height: 10),
+                                                        TextField(
+                                                          controller:
+                                                              feedbackController,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText:
+                                                                'Enter your feedback',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                          maxLines: 3,
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                            'Rate the message:'),
+                                                        SizedBox(height: 5),
+                                                        RatingBar.builder(
+                                                          initialRating: 0,
+                                                          minRating: 1,
+                                                          direction:
+                                                              Axis.horizontal,
+                                                          allowHalfRating: true,
+                                                          itemCount: 5,
+                                                          itemBuilder:
+                                                              (context, _) =>
+                                                                  Icon(
+                                                            Icons.star,
+                                                            color: Colors.amber,
+                                                          ),
+                                                          onRatingUpdate:
+                                                              (ratingValue) {
+                                                            rating =
+                                                                ratingValue;
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text('Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          User? user =
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser;
+                                                          if (user == null) {
+                                                            print(
+                                                                "No user is currently signed in.");
+                                                            return;
+                                                          }
+                                                          String email =
+                                                              user.email!;
+                                                          var userData =
+                                                              await fetchUserData(
+                                                                  email);
+                                                          if (userData ==
+                                                              null) {
+                                                            print(
+                                                                "No user data found.");
+                                                            return;
+                                                          }
+                                                          String fullName =
+                                                              userData[
+                                                                      'fullname'] ??
+                                                                  'Unknown';
+                                                          String feedback =
+                                                              feedbackController
+                                                                  .text;
+                                                          await ConversationUpload
+                                                              .insertValueIntoSpreadsheet(
+                                                                  fullName,
+                                                                  email,
+                                                                  feedback,
+                                                                  currentconvo!,
+                                                                  (index + 1)
+                                                                      .toString(),
+                                                                  rating
+                                                                      .toString());
+                                                          print(
+                                                              'Feedback: $feedback');
+                                                          print(
+                                                              'Rating: $rating');
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "We have recieved your feedback, we will make sure this does not happen again!");
+                                                        },
+                                                        child: Text('Save'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               );
                             },
-                          )),
-          ),
-          SizedBox(
-            height: (95 / 784) * screenHeight, // Adjust the height as needed
-            child: ListView.builder(
-              scrollDirection:
-                  Axis.horizontal, // Set the scroll direction to horizontal
-              itemCount: controller.questionSet.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: (MediaQuery.of(context).size.width -
-                          (60 / 360) * screenWidth) /
-                      1.25, // Divide width equally between items with padding
-                  margin: const EdgeInsets.fromLTRB(15, 5, 5, 10),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                    color: Color(0xffececec),
-                    borderRadius: BorderRadius.circular(15),
+                          ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                        5, 5, 0, 10), // Increased bottom padding
-                    child: ListTile(
-                      title: Text(
-                        controller.questionSet[index],
-                        style: GoogleFonts.dmSans(
-                          fontSize: (13 / 784) * screenHeight,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
+          ),
+          controller.chats.isEmpty
+              ? Container()
+              : SizedBox(
+                  height:
+                      (95 / 784) * screenHeight, // Adjust the height as needed
+                  child: ListView.builder(
+                    scrollDirection: Axis
+                        .horizontal, // Set the scroll direction to horizontal
+                    itemCount: controller.questionSet.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        width: (MediaQuery.of(context).size.width -
+                                (60 / 360) * screenWidth) /
+                            1.25, // Divide width equally between items with padding
+                        margin: const EdgeInsets.fromLTRB(15, 5, 5, 10),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 4,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                          color: Color(0xffececec),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                      ),
-                      onTap: () async {
-                        String text = controller.questionSet[index];
-                        Map<String, String> sender = {};
-                        sender.addAll({"id": "0", "text": text});
-                        sender.addAll({
-                          "id": "0",
-                          "text": text,
-                        });
-                        controller.chats.add(sender);
-                        SchedulerBinding.instance!.addPostFrameCallback((_) {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        });
-                        controller.msgController.clear();
-                        setState(() {});
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              5, 5, 0, 10), // Increased bottom padding
+                          child: ListTile(
+                            title: Text(
+                              controller.questionSet[index],
+                              style: GoogleFonts.dmSans(
+                                fontSize: (13 / 784) * screenHeight,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            onTap: () async {
+                              String text = controller.questionSet[index];
+                              Map<String, String> sender = {};
+                              sender.addAll({"id": "0", "text": text});
+                              sender.addAll({
+                                "id": "0",
+                                "text": text,
+                              });
+                              controller.chats.add(sender);
+                              SchedulerBinding.instance!
+                                  .addPostFrameCallback((_) {
+                                _scrollController.animateTo(
+                                  _scrollController.position.maxScrollExtent,
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              });
+                              controller.msgController.clear();
+                              setState(() {});
 
-                        String recog = CheckQuestion.getAnswerFromKey(text);
-                        if (recog != "No option") {
-                          Map<String, String> reciever = {};
-                          reciever.addAll({"id": "1", "text": recog});
-                          controller.chats.add(reciever);
-                          options = CheckQuestion.getOptionsFromKey(text);
+                              String recog =
+                                  CheckQuestion.getAnswerFromKey(text);
+                              if (recog != "No option") {
+                                Map<String, String> reciever = {};
+                                reciever.addAll({"id": "1", "text": recog});
+                                controller.chats.add(reciever);
+                                options = CheckQuestion.getOptionsFromKey(text);
 
-                          controller.questionSet = options;
-                          setState(() {});
-                          options.clear();
-                        } else {
-                          await postData(text);
-                        }
-                        SchedulerBinding.instance!.addPostFrameCallback((_) {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        });
+                                controller.questionSet = options;
+                                setState(() {});
+                                options.clear();
+                              } else {
+                                await postData(text, currentconvo);
+                              }
+                              SchedulerBinding.instance!
+                                  .addPostFrameCallback((_) {
+                                _scrollController.animateTo(
+                                  _scrollController.position.maxScrollExtent,
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              });
 
-                        setState(() {});
-                      },
-                    ),
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
+                ),
           Row(
             children: [
               Expanded(
@@ -403,7 +644,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             setState(() {});
                             options.clear();
                           } else {
-                            await postData(text);
+                            await postData(text, currentconvo);
                           }
 
                           SchedulerBinding.instance!.addPostFrameCallback((_) {

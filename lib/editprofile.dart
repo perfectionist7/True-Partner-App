@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:deevot_new_project/information.dart';
 import 'package:deevot_new_project/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -219,30 +220,43 @@ class _EditProfileState extends State<EditProfile> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: const Color(0xff001F3F),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xff352980),
+                  Color(0xff604AE6),
+                  Color(0xff352980),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+          ),
           actions: [
             Container(
-              height: 200,
-              child: Container(
-                // padding: EdgeInsets.only(
-                //   left: (10 / 411.42857142857144) * screenWidth,
-                // ), // Add some margin here
-                margin: EdgeInsets.only(right: 230),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.menu_sharp,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _scaffoldKey.currentState?.openDrawer();
-                    });
-                  },
+              // padding: EdgeInsets.only(
+              //   left: (10 / 411.42857142857144) * screenWidth,
+              // ), // Add some margin here
+              margin: EdgeInsets.only(right: 237),
+              child: IconButton(
+                icon: Icon(
+                  Icons.menu_sharp,
+                  size: 30,
+                  color: Colors.white,
                 ),
+                onPressed: () {
+                  setState(() {
+                    _scaffoldKey.currentState?.openDrawer();
+                  });
+                },
               ),
             ),
             Container(
-              margin: EdgeInsets.only(right: 20),
+              margin: EdgeInsets.only(right: 25),
               child: Image.asset(
                 "assets/images/app_bar_end_icon.png",
               ),
@@ -302,13 +316,13 @@ class _EditProfileState extends State<EditProfile> {
                           } else {
                             if (snapshot.hasError || snapshot.data == null) {
                               return CircleAvatar(
-                                radius: 80,
+                                radius: 70,
                                 backgroundImage:
                                     AssetImage("assets/images/profileimg.jpg"),
                               );
                             } else {
                               return CircleAvatar(
-                                radius: 80,
+                                radius: 70,
                                 backgroundImage: NetworkImage(snapshot.data!),
                               );
                             }
@@ -317,7 +331,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 152, left: 210),
+                      margin: EdgeInsets.only(top: 140, left: 210),
                       child: IconButton(
                         onPressed: () => _showOptionsDialog(context),
                         icon: Image.asset('assets/images/editprofilecam.png'),
@@ -436,31 +450,46 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       margin: EdgeInsets.only(
-                          top: (50 / 784) * screenHeight,
+                          top: (35 / 784) * screenHeight,
                           left: (26 / 384) * screenWidth,
                           right: (26 / 384) * screenWidth),
                       child: SizedBox(
                         height: (50 / 784) * screenHeight,
                         width: (350 / 384) * screenWidth,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            _showupdatedialog(context);
-                            // Fluttertoast.showToast(msg: "Updating information");
-                            // updateDetails();
-                            // Fluttertoast.showToast(
-                            //     msg: "Information updated successfully!");
-                          },
-                          child: Text(
-                            'Update Details +',
-                            style: GoogleFonts.poppins(
-                                fontSize: (16 / 784) * screenHeight,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xffF9FFFF)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xff4600A9),
+                                Color(0xff001F7D),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff6200EE),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              _showupdatedialog(context);
+                              // Fluttertoast.showToast(msg: "Updating information");
+                              // updateDetails();
+                              // Fluttertoast.showToast(
+                              //     msg: "Information updated successfully!");
+                            },
+                            child: Text(
+                              'Update Details +',
+                              style: GoogleFonts.poppins(
+                                  fontSize: (16 / 784) * screenHeight,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xffF9FFFF)),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
                           ),
                         ),
                       ),
@@ -472,27 +501,42 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       margin: EdgeInsets.only(
-                          top: (30 / 784) * screenHeight,
+                          top: (25 / 784) * screenHeight,
                           left: (26 / 384) * screenWidth,
                           right: (26 / 384) * screenWidth),
                       child: SizedBox(
                         height: (50 / 784) * screenHeight,
                         width: (350 / 384) * screenWidth,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            _showchangepassworddialog(context);
-                          },
-                          child: Text(
-                            'Change Password',
-                            style: GoogleFonts.poppins(
-                                fontSize: (16 / 784) * screenHeight,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xffF9FFFF)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xff4600A9),
+                                Color(0xff001F7D),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff6200EE),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              _showchangepassworddialog(context);
+                            },
+                            child: Text(
+                              'Change Password',
+                              style: GoogleFonts.poppins(
+                                  fontSize: (16 / 784) * screenHeight,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xffF9FFFF)),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
                           ),
                         ),
                       ),
@@ -504,80 +548,146 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       margin: EdgeInsets.only(
-                          top: (30 / 784) * screenHeight,
+                          top: (25 / 784) * screenHeight,
                           left: (26 / 384) * screenWidth,
                           right: (26 / 384) * screenWidth),
                       child: SizedBox(
                         height: (50 / 784) * screenHeight,
                         width: (350 / 384) * screenWidth,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            if (currentemail == "guest") {
-                              Fluttertoast.showToast(
-                                  msg:
-                                      "You must be logged in to delete your account!");
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete your Account?'),
-                                    content: const Text(
-                                        '''If you select Delete we will delete your account on our server.\n\nYour app data will also be deleted and you won't be able to retrieve it.\n\nSelect delete if you wish to proceed.'''),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text('Cancel'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text(
-                                          'Delete',
-                                        ),
-                                        onPressed: () async {
-                                          setState(() {
-                                            showSpinner = true;
-                                          });
-                                          await deleteUserWithSubcollection(
-                                              currentemail);
-                                          await deleteUserAccount();
-                                          SharedPreferences pref =
-                                              await SharedPreferences
-                                                  .getInstance();
-                                          pref.remove("email");
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  'Your account has been deleted successfully!');
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen()),
-                                          );
-                                          setState(() {
-                                            showSpinner = false;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xff4600A9),
+                                Color(0xff001F7D),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InformationPage()),
                               );
-                            }
-                            ;
-                          },
-                          child: Text(
-                            'Delete Profile',
-                            style: GoogleFonts.poppins(
-                                fontSize: (16 / 784) * screenHeight,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                            },
+                            child: Text(
+                              'Update Profile Form',
+                              style: GoogleFonts.poppins(
+                                  fontSize: (16 / 784) * screenHeight,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xffF9FFFF)),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff6200EE),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      margin: EdgeInsets.only(
+                          top: (25 / 784) * screenHeight,
+                          left: (26 / 384) * screenWidth,
+                          right: (26 / 384) * screenWidth),
+                      child: SizedBox(
+                        height: (50 / 784) * screenHeight,
+                        width: (350 / 384) * screenWidth,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xff4600A9),
+                                Color(0xff001F7D),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (currentemail == "guest") {
+                                Fluttertoast.showToast(
+                                    msg:
+                                        "You must be logged in to delete your account!");
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Delete your Account?'),
+                                      content: const Text(
+                                          '''If you select Delete we will delete your account on our server.\n\nYour app data will also be deleted and you won't be able to retrieve it.\n\nSelect delete if you wish to proceed.'''),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text(
+                                            'Delete',
+                                          ),
+                                          onPressed: () async {
+                                            setState(() {
+                                              showSpinner = true;
+                                            });
+                                            await deleteUserWithSubcollection(
+                                                currentemail);
+                                            await deleteUserAccount();
+                                            SharedPreferences pref =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            pref.remove("email");
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Your account has been deleted successfully!');
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen()),
+                                            );
+                                            setState(() {
+                                              showSpinner = false;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                              ;
+                            },
+                            child: Text(
+                              'Delete Profile',
+                              style: GoogleFonts.poppins(
+                                  fontSize: (16 / 784) * screenHeight,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
                           ),
                         ),
                       ),
@@ -598,6 +708,19 @@ class _EditProfileState extends State<EditProfile> {
                       //     },
                       //   ),
                       // ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.fromLTRB(
+                          (30 / 411.42857142857144) * screenWidth, 30, 0, 30),
+                      padding: const EdgeInsets.all(1),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_rounded),
+                        iconSize: screenWidth * 0.08,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
                   ],
                 ),

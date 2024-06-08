@@ -366,10 +366,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset("assets/images/facebookLogo.png"),
+                        Image.asset("assets/images/applelogo.png"),
                         12.widthBox,
                         Text(
-                          "Sign in with Facebook",
+                          "Sign in with Apple",
                           style: GoogleFonts.dmSans(
                               fontSize: (11 / 784) * screenHeight,
                               fontWeight: FontWeight.w500,

@@ -35,7 +35,6 @@ class _DrawerContentState extends State<DrawerContent> {
 
   void clearChatData() {
     controller.chats.clear();
-    setState(() {});
   }
 
   @override
@@ -97,7 +96,7 @@ class _DrawerContentState extends State<DrawerContent> {
     return ModalProgressHUD(
       inAsyncCall: false, // Always set inAsyncCall to false
       child: Container(
-        color: Color(0xff001F3E),
+        color: Color(0xff352980),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -193,9 +192,7 @@ class _DrawerContentState extends State<DrawerContent> {
               ),
             ),
             ListTile(
-              contentPadding: EdgeInsets.only(
-                  top: (10 / 784) * screenHeight,
-                  left: (35 / 384) * screenWidth),
+              contentPadding: EdgeInsets.only(left: (30 / 384) * screenWidth),
               // leading: ImageIcon(
               //   AssetImage('assets/images/home_icon.png'),
               //   color: Color(0xff0A1621),
@@ -203,8 +200,8 @@ class _DrawerContentState extends State<DrawerContent> {
               title: Text(
                 'Home',
                 style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
+                  fontSize: (16 / 784) * screenHeight,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -220,9 +217,7 @@ class _DrawerContentState extends State<DrawerContent> {
               color: Colors.white,
             ),
             ListTile(
-              contentPadding: EdgeInsets.only(
-                  top: (10 / 784) * screenHeight,
-                  left: (35 / 384) * screenWidth),
+              contentPadding: EdgeInsets.only(left: (30 / 384) * screenWidth),
               // leading: ImageIcon(
               //   AssetImage('assets/images/home_icon.png'),
               //   color: Color(0xff0A1621),
@@ -230,8 +225,8 @@ class _DrawerContentState extends State<DrawerContent> {
               title: Text(
                 'Edit Profile',
                 style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
+                  fontSize: (16 / 784) * screenHeight,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -247,33 +242,12 @@ class _DrawerContentState extends State<DrawerContent> {
               thickness: 2,
             ),
             ListTile(
-              contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
+              contentPadding: EdgeInsets.only(left: (30 / 384) * screenWidth),
               title: Text(
-                'Edit Form',
+                'Subscription',
                 style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InformationPage()),
-                );
-              },
-            ),
-            Divider(
-              color: Colors.white,
-              thickness: 2,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
-              title: Text(
-                'Purchase a subscription',
-                style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
+                  fontSize: (16 / 784) * screenHeight,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -289,12 +263,12 @@ class _DrawerContentState extends State<DrawerContent> {
               thickness: 2,
             ),
             ListTile(
-              contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
+              contentPadding: EdgeInsets.only(left: (30 / 384) * screenWidth),
               title: Text(
                 'About Us',
                 style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
+                  fontSize: (16 / 784) * screenHeight,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -310,7 +284,7 @@ class _DrawerContentState extends State<DrawerContent> {
               thickness: 2,
             ),
             ListTile(
-              contentPadding: EdgeInsets.only(left: (35 / 384) * screenWidth),
+              contentPadding: EdgeInsets.only(left: (30 / 384) * screenWidth),
               // leading: ImageIcon(
               //   AssetImage('assets/images/logout_icon.png'),
               //   color: Color(0xff0A1621),
@@ -318,8 +292,8 @@ class _DrawerContentState extends State<DrawerContent> {
               title: Text(
                 'Logout',
                 style: GoogleFonts.saira(
-                  fontSize: (18 / 784) * screenHeight,
-                  fontWeight: FontWeight.w500,
+                  fontSize: (16 / 784) * screenHeight,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -329,11 +303,12 @@ class _DrawerContentState extends State<DrawerContent> {
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 pref.remove("email");
                 clearChatData();
-                Fluttertoast.showToast(msg: 'Logged out Successfully!');
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
+                Fluttertoast.showToast(msg: 'Logged out Successfully!');
+
                 // showSpinner = false;
               },
             ),

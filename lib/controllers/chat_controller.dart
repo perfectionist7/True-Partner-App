@@ -14,10 +14,10 @@ class ChatsController extends GetxController {
 
   List<String> questionSet = [];
   var set1 = [
-    "I am feeling happy today lets go and do something ",
-    "I am feeling sad today",
-    "I am feeling angry today",
-    "I am feeling lucky today"
+    "I'm feeling overwhelmed. Can you help me understand why?",
+    "I want to feel happier. Do you have any tips or activities that might help?",
+    "I've been feeling sad lately. Can you suggest some ways to cope with these feelings?",
+    "I'm experiencing a lot of anger. How can I manage my anger better?"
   ];
 
   List<Map<String, String>> chats = [];

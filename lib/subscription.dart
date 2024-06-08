@@ -23,6 +23,7 @@ double screenWidth = 0.0;
 
 class Subscription_State extends State<Subscription> {
   bool isDrawerOpen = false;
+  int selectedPlan = -1;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   void toggleDrawer() {
@@ -37,125 +38,22 @@ class Subscription_State extends State<Subscription> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedPlan = -1;
+  }
+
+  void selectPlan(int index) {
+    setState(() {
+      selectedPlan = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    Widget onemonth() {
-      return Container(
-        margin: EdgeInsets.fromLTRB(10, 22, 10, 20),
-        height: 60,
-        width: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: Color(0xffFFDE59),
-          ),
-        ),
-        child: ElevatedButton(
-          onPressed: () async {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => RazorPayGateway(amount: "99")),
-            );
-          },
-          child: Text(
-            '1 month @ 99/-',
-            style: GoogleFonts.dmSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xff001F3F),
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget sixmonths() {
-      return Container(
-        margin: EdgeInsets.fromLTRB(10, 22, 10, 20),
-        height: 60,
-        width: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: Color(0xffFFDE59),
-          ),
-        ),
-        child: ElevatedButton(
-          onPressed: () async {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => RazorPayGateway(amount: "499")),
-            );
-          },
-          child: Text(
-            '6 months  @ 499/-',
-            style: GoogleFonts.dmSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xff001F3F),
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget oneyear() {
-      return Container(
-        margin: EdgeInsets.fromLTRB(10, 22, 10, 40),
-        height: 60,
-        width: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            style: BorderStyle.solid,
-            color: Color(0xffFFDE59),
-          ),
-        ),
-        child: ElevatedButton(
-          onPressed: () async {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => RazorPayGateway(amount: "949")),
-            );
-          },
-          child: Text(
-            '1 year @ 949/-',
-            style: GoogleFonts.dmSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xff001F3F),
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      );
-    }
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -164,12 +62,28 @@ class Subscription_State extends State<Subscription> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color(0xff001F3F),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xff352980),
+                    Color(0xff604AE6),
+                    Color(0xff352980),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
+              ),
+            ),
             actions: [
               Container(
                 // padding: EdgeInsets.only(
                 //   left: (10 / 411.42857142857144) * screenWidth,
                 // ), // Add some margin here
-                margin: EdgeInsets.only(right: 230),
+                margin: EdgeInsets.only(right: 237),
                 child: IconButton(
                   icon: Icon(
                     Icons.menu_sharp,
@@ -184,12 +98,38 @@ class Subscription_State extends State<Subscription> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.only(right: 25),
                 child: Image.asset(
                   "assets/images/app_bar_end_icon.png",
                 ),
               ),
             ],
+            // title: Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   children: [
+            //     IconButton(
+            //         color: Colors.white,
+            //         // onPressed: () async {
+            //         //   await FirebaseAuth.instance.signOut();
+            //         //   clearChatData();
+            //         //   Get.back();
+            //         // },
+            //         icon: const Icon(
+            //           Icons.menu_rounded,
+            //           size: 30,
+            //         )),
+            //     // Text(
+            //     //   "Back",
+            //     //   style: GoogleFonts.raleway(
+            //     //       fontSize: (16 / 784) * screenHeight,
+            //     //       color: Colors.white,
+            //     //       fontWeight: FontWeight.w600),
+            //     // ),
+            //   ],
+            // ),
           ),
           backgroundColor: Colors.white,
           drawer: Container(
@@ -203,30 +143,338 @@ class Subscription_State extends State<Subscription> {
                 parent: AlwaysScrollableScrollPhysics()),
             children: [
               Container(
-                margin: EdgeInsets.only(left: 50, right: 50, top: 50),
+                margin: EdgeInsets.only(left: 50, right: 50, top: 30),
                 child: Text(
-                  'Please select your choice of subscription',
+                  'Get Premium',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.saira(
                     fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff001F3F),
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff4600A9),
                   ),
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(left: 50, right: 50, top: 40),
-                  child: onemonth()),
+                margin: EdgeInsets.only(left: 16, right: 16, top: 30),
+                child: Text(
+                  'Unlock all the power of this mobile tool and enjoy digital experience like never before!',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.saira(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff1B1B1B),
+                  ),
+                ),
+              ),
               Container(
-                  margin: EdgeInsets.only(left: 50, right: 50, top: 0),
-                  child: sixmonths()),
+                child: Image(
+                    image: AssetImage('assets/images/subscription_logo.png')),
+              ),
+              Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    height: 70,
+                    width: 320,
+                    decoration: BoxDecoration(
+                      color: Color(0xffF6D748).withOpacity(0.10),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        selectPlan(0);
+                      },
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text.rich(
+                            textAlign: TextAlign.left,
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Annual Plan\n',
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color:
+                                        Color(0xff334C65), // Color for "Annual"
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'Just 949 per year',
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(
+                                        0xff1B1B1B), // Color for the text below
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xfffffee0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        side: BorderSide(
+                          color: selectedPlan == 0
+                              ? Color(
+                                  0xff4600A9) // Change border color as needed
+                              : Colors
+                                  .transparent, // Change border color as needed
+                          width: selectedPlan == 0
+                              ? 2.0
+                              : 0, // Change border width as needed
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 230, top: 30),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the value as needed
+                      color: Color(
+                          0xff26CB63), // Change the color according to your design
+                    ),
+                    padding: EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                        top: 7,
+                        bottom: 7), // Adjust padding as needed
+                    child: Text(
+                      'Best Value',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white, // Color for "Annual"
+                      ),
+                    ),
+                  )
+                ],
+              ),
               Container(
-                  margin: EdgeInsets.only(left: 50, right: 50, top: 0),
-                  child: oneyear()),
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                height: 70,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Color(0xfffffee0),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    selectPlan(1); // Select the plan
+                  },
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Semi-Annual Plan\n',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff334C65), // Color for "Annual"
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Only 499 per 6 months',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Color(
+                                    0xff1B1B1B), // Color for the text below
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xfffffee0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    side: BorderSide(
+                      color: selectedPlan == 1
+                          ? Color(0xff4600A9) // Change border color as needed
+                          : Colors.transparent, // Change border color as needed
+                      width: selectedPlan == 1
+                          ? 2.0
+                          : 0, // Change border width as needed
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                height: 70,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Color(0xffF6D748).withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    selectPlan(2);
+                  },
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Monthly Plan\n',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff334C65), // Color for "Annual"
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Just 99 per month',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Color(
+                                    0xff1B1B1B), // Color for the text below
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xfffffee0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    side: BorderSide(
+                      color: selectedPlan == 2
+                          ? Color(0xff4600A9) // Change border color as needed
+                          : Colors.transparent, // Change border color as needed
+                      width: selectedPlan == 2
+                          ? 2.0
+                          : 0, // Change border width as needed
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                ),
+                margin: EdgeInsets.only(
+                    top: (15 / 784) * screenHeight,
+                    left: (60 / 384) * screenWidth,
+                    right: (60 / 384) * screenWidth),
+                child: SizedBox(
+                  height: (60 / 784) * screenHeight,
+                  width: (211 / 384) * screenWidth,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xff4600A9),
+                          Color(0xff001F7D),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(12),
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RazorPayGateway(index: selectedPlan)),
+                        );
+                      },
+                      child: Text(
+                        selectedPlan == 0
+                            ? 'Start Annual Plan'
+                            : selectedPlan == 1
+                                ? 'Start Semi-Annual Plan'
+                                : selectedPlan == 2
+                                    ? 'Start Monthly Plan'
+                                    : 'Select a Plan',
+                        style: GoogleFonts.dmSans(
+                            fontSize: (18 / 784) * screenHeight,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xffF9FFFF)),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: Text.rich(
+                  textAlign: TextAlign.center,
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'By placing this order, you agree to the ',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff1B1B1B), // Color for "Annual"
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Terms of Service ',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff1B1B1B),
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'and ',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff1B1B1B), // Color for "Annual"
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Privacy Policy.',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff1B1B1B),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (40 / 411.42857142857144) * screenWidth, 100, 0, 0),
+                    (40 / 411.42857142857144) * screenWidth, 30, 0, 30),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),

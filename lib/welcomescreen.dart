@@ -92,7 +92,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 Container(
                   margin: const EdgeInsets.only(top: 180, left: 40),
                   child: Text(
-                    "True partner!",
+                    "Pulse Beat",
                     style: GoogleFonts.saira(
                       fontSize: (42 / 890.2857142857143) * screenHeight,
                       fontWeight: FontWeight.w700,

@@ -252,34 +252,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Theme(
-                            data: Theme.of(context).copyWith(
-                              unselectedWidgetColor: Colors.white,
-                            ),
-                            child: Checkbox(
-                                activeColor: Colors.red,
-                                checkColor: Colors.white,
-                                focusColor: Colors.white,
-                                value: isCheck,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    isCheck = newValue!;
-                                  });
-                                })),
-                        Text(
-                          "Remember Me",
-                          style: GoogleFonts.dmSans(
-                              fontSize: (12 / 784) * screenHeight,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   children: [
+                    //     Theme(
+                    //         data: Theme.of(context).copyWith(
+                    //           unselectedWidgetColor: Colors.white,
+                    //         ),
+                    //         child: Checkbox(
+                    //             activeColor: Colors.red,
+                    //             checkColor: Colors.white,
+                    //             focusColor: Colors.white,
+                    //             value: isCheck,
+                    //             onChanged: (newValue) {
+                    //               setState(() {
+                    //                 isCheck = newValue!;
+                    //               });
+                    //             })),
+                    //     Text(
+                    //       "Remember Me",
+                    //       style: GoogleFonts.dmSans(
+                    //           fontSize: (12 / 784) * screenHeight,
+                    //           fontWeight: FontWeight.w400,
+                    //           color: Colors.white),
+                    //     ),
+                    //   ],
+                    // ),
                     Container(
-                      margin: EdgeInsets.only(right: (20 / 360) * screenWidth),
+                      margin: EdgeInsets.only(
+                          right: (20 / 360) * screenWidth, left: 210),
                       child: TextButton(
                         onPressed: () async {
                           setState(() {
@@ -311,6 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           "Forgot Password ?",
                           style: GoogleFonts.dmSans(
+                              decoration: TextDecoration.underline,
                               fontSize: (12 / 784) * screenHeight,
                               fontWeight: FontWeight.w400,
                               color: Colors.white),
@@ -462,10 +464,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset("assets/images/facebookLogo.png"),
+                        Image.asset("assets/images/applelogo.png"),
                         12.widthBox,
                         Text(
-                          "Log in with Facebook",
+                          "Log in with Apple",
                           style: GoogleFonts.dmSans(
                               fontSize: (11 / 784) * screenHeight,
                               fontWeight: FontWeight.w500,
