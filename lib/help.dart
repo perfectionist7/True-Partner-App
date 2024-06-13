@@ -68,11 +68,11 @@ class _Help_ScreenState extends State<Help_Screen> {
                 // padding: EdgeInsets.only(
                 //   left: (10 / 411.42857142857144) * screenWidth,
                 // ), // Add some margin here
-                margin: EdgeInsets.only(right: 237),
+                margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
                 child: IconButton(
                   icon: Icon(
                     Icons.menu_sharp,
-                    size: 30,
+                    size: (30 / 784) * screenHeight,
                     color: Colors.white,
                   ),
                   onPressed: () {
@@ -83,7 +83,7 @@ class _Help_ScreenState extends State<Help_Screen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
                 child: Image.asset(
                   "assets/images/app_bar_end_icon.png",
                 ),
@@ -118,7 +118,7 @@ class _Help_ScreenState extends State<Help_Screen> {
           ),
           backgroundColor: Colors.white,
           drawer: Container(
-            width: 240,
+            width: (240 / 360) * screenWidth,
             child: Drawer(
               child: DrawerContent(),
             ),
@@ -131,7 +131,7 @@ class _Help_ScreenState extends State<Help_Screen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 60),
+                    margin: EdgeInsets.only(top: (30 / 784) * screenHeight),
                     child: Image.asset(
                       "assets/images/aboutus_devotai.png",
                       scale: 0.4,
@@ -222,7 +222,10 @@ class _Help_ScreenState extends State<Help_Screen> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (40 / 411.42857142857144) * screenWidth, 0, 0, 0),
+                    (40 / 411.42857142857144) * screenWidth,
+                    (20 / 784) * screenHeight,
+                    0,
+                    0),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),

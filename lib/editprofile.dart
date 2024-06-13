@@ -241,11 +241,11 @@ class _EditProfileState extends State<EditProfile> {
               // padding: EdgeInsets.only(
               //   left: (10 / 411.42857142857144) * screenWidth,
               // ), // Add some margin here
-              margin: EdgeInsets.only(right: 237),
+              margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
               child: IconButton(
                 icon: Icon(
                   Icons.menu_sharp,
-                  size: 30,
+                  size: (30 / 784) * screenHeight,
                   color: Colors.white,
                 ),
                 onPressed: () {
@@ -256,7 +256,7 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(right: 25),
+              margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
               child: Image.asset(
                 "assets/images/app_bar_end_icon.png",
               ),
@@ -291,7 +291,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
         backgroundColor: Colors.white,
         drawer: Container(
-          width: 240,
+          width: (240 / 360) * screenWidth,
           child: Drawer(
             child: DrawerContent(),
           ),
@@ -306,7 +306,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Container(
                       alignment: Alignment.center,
-                      margin: EdgeInsets.only(top: 30),
+                      margin: EdgeInsets.only(top: (30 / 784) * screenHeight),
                       child: FutureBuilder<String?>(
                         future: profileImageUrlFuture,
                         builder: (context, snapshot) {
@@ -316,13 +316,13 @@ class _EditProfileState extends State<EditProfile> {
                           } else {
                             if (snapshot.hasError || snapshot.data == null) {
                               return CircleAvatar(
-                                radius: 70,
+                                radius: (70 / 784) * screenHeight,
                                 backgroundImage:
                                     AssetImage("assets/images/profileimg.jpg"),
                               );
                             } else {
                               return CircleAvatar(
-                                radius: 70,
+                                radius: (70 / 784) * screenHeight,
                                 backgroundImage: NetworkImage(snapshot.data!),
                               );
                             }
@@ -331,7 +331,9 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 140, left: 210),
+                      margin: EdgeInsets.only(
+                          top: (140 / 784) * screenHeight,
+                          left: (210 / 360) * screenWidth),
                       child: IconButton(
                         onPressed: () => _showOptionsDialog(context),
                         icon: Image.asset('assets/images/editprofilecam.png'),
@@ -351,18 +353,25 @@ class _EditProfileState extends State<EditProfile> {
                         } else {
                           if (snapshot.hasError || snapshot.data == null) {
                             return Container(
-                              margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                              margin: EdgeInsets.fromLTRB(
+                                  (25 / 360) * screenWidth,
+                                  (20 / 784) * screenHeight,
+                                  (25 / 360) * screenWidth,
+                                  0),
                               child: TextField(
                                 readOnly: true,
                                 controller: _fullnameController,
                                 decoration: InputDecoration(
                                   hintText: 'Not set yet',
                                   hintStyle: GoogleFonts.dmSans(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w700,
                                       color: Color(0xff708090)),
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(16, 18, 5, 15),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      (16 / 360) * screenWidth,
+                                      (18 / 784) * screenHeight,
+                                      (5 / 360) * screenWidth,
+                                      (15 / 784) * screenHeight),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide(
@@ -373,19 +382,26 @@ class _EditProfileState extends State<EditProfile> {
                             );
                           } else {
                             return Container(
-                              margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                              margin: EdgeInsets.fromLTRB(
+                                  (25 / 360) * screenWidth,
+                                  (20 / 784) * screenHeight,
+                                  (25 / 360) * screenWidth,
+                                  0),
                               child: TextField(
                                 readOnly: true,
                                 controller: _fullnameController,
                                 decoration: InputDecoration(
                                   hintText: snapshot.data,
                                   hintStyle: GoogleFonts.dmSans(
-                                    fontSize: 16,
+                                    fontSize: (16 / 784) * screenHeight,
                                     fontWeight: FontWeight.w700,
                                     color: Color(0xff708090),
                                   ),
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(16, 18, 19, 15),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      (16 / 360) * screenWidth,
+                                      (18 / 784) * screenHeight,
+                                      (19 / 360) * screenWidth,
+                                      (15 / 784) * screenHeight),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide(
@@ -409,8 +425,8 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                     Container(
-                      height: 53,
-                      width: 343,
+                      height: (53 / 784) * screenHeight,
+                      width: (343 / 360) * screenWidth,
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -424,7 +440,11 @@ class _EditProfileState extends State<EditProfile> {
                           borderRadius: BorderRadius.circular(10),
                           border:
                               Border.all(color: Color(0xff6200EE), width: 1)),
-                      margin: EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      margin: EdgeInsets.fromLTRB(
+                          (25 / 360) * screenWidth,
+                          (25 / 784) * screenHeight,
+                          (25 / 360) * screenWidth,
+                          0),
                       child: TextField(
                         readOnly: true,
                         controller: _passwordcontroller,
@@ -435,10 +455,14 @@ class _EditProfileState extends State<EditProfile> {
                         decoration: InputDecoration(
                           hintText: '$email',
                           hintStyle: GoogleFonts.dmSans(
-                              fontSize: 16,
+                              fontSize: (16 / 784) * screenHeight,
                               fontWeight: FontWeight.w700,
                               color: Color(0xff708090)),
-                          contentPadding: EdgeInsets.fromLTRB(16, 18, 19, 15),
+                          contentPadding: EdgeInsets.fromLTRB(
+                              (16 / 360) * screenWidth,
+                              (18 / 784) * screenHeight,
+                              (19 / 360) * screenWidth,
+                              (15 / 784) * screenHeight),
                           border: InputBorder.none,
                         ),
                       ),
@@ -712,7 +736,10 @@ class _EditProfileState extends State<EditProfile> {
                     Container(
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.fromLTRB(
-                          (30 / 411.42857142857144) * screenWidth, 30, 0, 30),
+                          (30 / 411.42857142857144) * screenWidth,
+                          (30 / 784) * screenHeight,
+                          0,
+                          (30 / 784) * screenHeight),
                       padding: const EdgeInsets.all(1),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_rounded),
@@ -739,27 +766,34 @@ class _EditProfileState extends State<EditProfile> {
         return ListView(
           children: [
             Container(
-              margin: EdgeInsets.only(top: 210, bottom: 110),
+              margin: EdgeInsets.only(
+                  top: (210 / 784) * screenHeight,
+                  bottom: (110 / 784) * screenHeight),
               child: AlertDialog(
-                contentPadding:
-                    EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 20),
+                contentPadding: EdgeInsets.only(
+                    left: (10 / 360) * screenWidth,
+                    bottom: (20 / 784) * screenHeight,
+                    top: (20 / 784) * screenHeight,
+                    right: (20 / 360) * screenWidth),
                 backgroundColor: Colors.white,
                 title: Container(
-                  margin: EdgeInsets.only(top: 5, left: 0),
+                  margin:
+                      EdgeInsets.only(top: (5 / 784) * screenHeight, left: 0),
                   child: Row(
                     children: [
                       Text(
                         'Update Details',
                         style: GoogleFonts.saira(
-                            fontSize: 16,
+                            fontSize: (16 / 784) * screenHeight,
                             fontWeight: FontWeight.w500,
                             color: Color(0xff001F3E)),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 75),
+                        margin: EdgeInsets.only(left: (75 / 360) * screenWidth),
                         child: IconButton(
                           icon: Image.asset('assets/images/closedialog.png'),
-                          iconSize: 24.0, // You can adjust the size as needed
+                          iconSize: (24 / 784) *
+                              screenHeight, // You can adjust the size as needed
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -772,18 +806,18 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(left: 15),
+                      margin: EdgeInsets.only(left: (15 / 360) * screenWidth),
                       child: Text(
                         "First Name",
                         style: GoogleFonts.saira(
-                          fontSize: 16,
+                          fontSize: (16 / 784) * screenHeight,
                           fontWeight: FontWeight.w500,
                           color: Color(0xff344054),
                         ),
                       ),
                     ),
                     Container(
-                      width: 300,
+                      width: (300 / 360) * screenWidth,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -820,21 +854,21 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: (20 / 784) * screenHeight),
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(left: 15),
+                      margin: EdgeInsets.only(left: (15 / 360) * screenWidth),
                       child: Text(
                         "Last Name",
                         style: GoogleFonts.saira(
-                          fontSize: 16,
+                          fontSize: (16 / 784) * screenHeight,
                           fontWeight: FontWeight.w500,
                           color: Color(0xff344054),
                         ),
                       ),
                     ),
                     Container(
-                      width: 300,
+                      width: (300 / 360) * screenWidth,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -874,9 +908,13 @@ class _EditProfileState extends State<EditProfile> {
                     Row(
                       children: [
                         Container(
-                          margin: EdgeInsets.fromLTRB(15, 25, 10, 0),
-                          height: 50,
-                          width: 105,
+                          margin: EdgeInsets.fromLTRB(
+                              (15 / 360) * screenWidth,
+                              (25 / 784) * screenHeight,
+                              (10 / 360) * screenWidth,
+                              0),
+                          height: (50 / 784) * screenHeight,
+                          width: (105 / 360) * screenWidth,
                           child: ElevatedButton(
                               onPressed: () async {
                                 Navigator.of(context).push(
@@ -886,7 +924,7 @@ class _EditProfileState extends State<EditProfile> {
                               },
                               child: Text('Cancel',
                                   style: GoogleFonts.dmSans(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w700,
                                       color: Color(0xff6750A4))),
                               style: ElevatedButton.styleFrom(
@@ -899,9 +937,10 @@ class _EditProfileState extends State<EditProfile> {
                               )),
                         ),
                         Container(
-                          margin: EdgeInsets.fromLTRB(10, 25, 0, 0),
-                          height: 50,
-                          width: 105,
+                          margin: EdgeInsets.fromLTRB((10 / 360) * screenWidth,
+                              (25 / 784) * screenHeight, 0, 0),
+                          height: (50 / 784) * screenHeight,
+                          width: (105 / 360) * screenWidth,
                           child: ElevatedButton(
                               onPressed: () async {
                                 showSpinner = true;
@@ -930,7 +969,7 @@ class _EditProfileState extends State<EditProfile> {
                               },
                               child: Text('Save',
                                   style: GoogleFonts.dmSans(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white)),
                               style: ElevatedButton.styleFrom(
@@ -964,27 +1003,34 @@ class _EditProfileState extends State<EditProfile> {
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.only(top: 210, bottom: 110),
+            margin: EdgeInsets.only(
+                top: (210 / 784) * screenHeight,
+                bottom: (110 / 784) * screenHeight),
             child: AlertDialog(
-              contentPadding:
-                  EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 20),
+              contentPadding: EdgeInsets.only(
+                  left: (10 / 360) * screenWidth,
+                  bottom: (20 / 784) * screenHeight,
+                  top: (20 / 784) * screenHeight,
+                  right: (20 / 360) * screenWidth),
               backgroundColor: Colors.white,
               title: Container(
-                margin: EdgeInsets.only(top: 15, left: 0),
+                margin:
+                    EdgeInsets.only(top: (15 / 784) * screenHeight, left: 0),
                 child: Row(
                   children: [
                     Text(
                       'Change Password',
                       style: GoogleFonts.saira(
-                          fontSize: 16,
+                          fontSize: (16 / 784) * screenHeight,
                           fontWeight: FontWeight.w500,
                           color: Color(0xff001F3E)),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 50),
+                      margin: EdgeInsets.only(left: (50 / 360) * screenWidth),
                       child: IconButton(
                         icon: Image.asset('assets/images/closedialog.png'),
-                        iconSize: 24.0, // You can adjust the size as needed
+                        iconSize: (24 / 784) *
+                            screenHeight, // You can adjust the size as needed
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -997,7 +1043,7 @@ class _EditProfileState extends State<EditProfile> {
                 child: Column(
                   children: [
                     Container(
-                      width: 300,
+                      width: (300 / 360) * screenWidth,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -1036,7 +1082,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ),
                     Container(
-                      width: 300,
+                      width: (300 / 360) * screenWidth,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -1075,7 +1121,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ),
                     Container(
-                      width: 300,
+                      width: (300 / 360) * screenWidth,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -1116,9 +1162,13 @@ class _EditProfileState extends State<EditProfile> {
                     Row(
                       children: [
                         Container(
-                          margin: EdgeInsets.fromLTRB(15, 25, 10, 0),
-                          height: 50,
-                          width: 105,
+                          margin: EdgeInsets.fromLTRB(
+                              (15 / 360) * screenWidth,
+                              (25 / 784) * screenHeight,
+                              (10 / 360) * screenWidth,
+                              0),
+                          height: (50 / 784) * screenHeight,
+                          width: (105 / 360) * screenWidth,
                           child: ElevatedButton(
                               onPressed: () async {
                                 Navigator.of(context).push(
@@ -1128,7 +1178,7 @@ class _EditProfileState extends State<EditProfile> {
                               },
                               child: Text('Cancel',
                                   style: GoogleFonts.dmSans(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w700,
                                       color: Color(0xff6750A4))),
                               style: ElevatedButton.styleFrom(
@@ -1141,9 +1191,10 @@ class _EditProfileState extends State<EditProfile> {
                               )),
                         ),
                         Container(
-                          margin: EdgeInsets.fromLTRB(10, 25, 0, 0),
-                          height: 50,
-                          width: 110,
+                          margin: EdgeInsets.fromLTRB((10 / 360) * screenWidth,
+                              (25 / 784) * screenHeight, 0, 0),
+                          height: (50 / 784) * screenHeight,
+                          width: (110 / 360) * screenWidth,
                           child: ElevatedButton(
                               onPressed: () async {
                                 showSpinner = true;
@@ -1187,7 +1238,7 @@ class _EditProfileState extends State<EditProfile> {
                               },
                               child: Text('Update',
                                   style: GoogleFonts.dmSans(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white)),
                               style: ElevatedButton.styleFrom(
@@ -1214,27 +1265,33 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void _showOptionsDialog(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(left: 10, bottom: 20, top: 10, right: 5),
+          contentPadding: EdgeInsets.only(
+              left: (10 / 360) * screenWidth,
+              bottom: (20 / 784) * screenHeight,
+              top: (10 / 784) * screenHeight,
+              right: (5 / 360) * screenWidth),
           backgroundColor: Color(0xffF3EDF7),
           title: Row(
             children: [
               Text(
                 'Upload image',
                 style: GoogleFonts.poppins(
-                    fontSize: 22,
+                    fontSize: (22 / 784) * screenHeight,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff1D1B20)),
               ),
               Container(
-                margin: EdgeInsets.only(left: 25),
+                margin: EdgeInsets.only(left: (25 / 360) * screenWidth),
                 child: IconButton(
                   icon: Image.asset('assets/images/closedialog.png'),
-                  iconSize: 24.0, // You can adjust the size as needed
+                  iconSize: (24 / 784) *
+                      screenHeight, // You can adjust the size as needed
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -1262,18 +1319,18 @@ class _EditProfileState extends State<EditProfile> {
                       Text(
                         'From Device',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: (14 / 784) * screenHeight,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff6750A4),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 5),
+                        padding: EdgeInsets.only(left: (5 / 360) * screenWidth),
                         child: Image.asset(
                           'assets/images/upload_icon.png', // Replace with your asset path
                           color: Colors.black,
-                          height: 24,
-                          width: 24,
+                          height: (24 / 784) * screenHeight,
+                          width: (24 / 360) * screenWidth,
                         ),
                       ),
                     ],
@@ -1296,18 +1353,19 @@ class _EditProfileState extends State<EditProfile> {
                       Text(
                         'Capture',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: (14 / 784) * screenHeight,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff6750A4),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 10),
+                        padding:
+                            EdgeInsets.only(left: (10 / 360) * screenWidth),
                         child: Image.asset(
                           'assets/images/editprofilecam.png', // Replace with your asset path
                           color: Colors.black,
-                          height: 24,
-                          width: 24,
+                          height: (24 / 784) * screenHeight,
+                          width: (24 / 360) * screenWidth,
                         ),
                       ),
                     ],

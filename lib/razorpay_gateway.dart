@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'upload_payment.dart';
+import 'api_services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer_content.dart';
 
 class RazorPayGateway extends StatefulWidget {
@@ -14,10 +20,21 @@ class RazorPayGateway extends StatefulWidget {
 
 class _RazorPayGatewayState extends State<RazorPayGateway> {
   late Razorpay _razorpay;
+  String? email;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController amtController = TextEditingController();
   late int index;
   String amount = '';
+  getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+// Check if the user is signed in
+    if (user != null) {
+      email = user.email; // <-- Their email
+    } else {
+      email = "guest";
+    }
+  }
 
   void openCheckout(amount) async {
     amount = amount * 100;
@@ -37,13 +54,52 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
     }
   }
 
-  void HandlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(
-        msg: "Payment Succesful! with payment ID: " + response.paymentId!);
+  void HandlePaymentSuccess(PaymentSuccessResponse response) async {
+    var userData = await fetchUserData(email!);
+    if (userData == null) {
+      print("No user data found.");
+      return;
+    }
+    String fullName = userData['fullname'] ?? 'Unknown';
+    String paymentID = response.paymentId!;
+    String finalamount = amount;
+    String subscriptionplan = index == 0
+        ? "Annual Plan"
+        : index == 1
+            ? "Semi-Annual Plan"
+            : index == 2
+                ? "Monthly Plan"
+                : "Invalid";
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd - kk:mm').format(now);
+    String status = "Success";
+    await PaymentUpload.insertValueIntoSpreadsheet(email!, fullName, paymentID,
+        finalamount, subscriptionplan, formattedDate, status);
+    Fluttertoast.showToast(msg: "Payment Succesful!");
   }
 
-  void HandlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(msg: "Payment Failed! " + response.message!);
+  void HandlePaymentError(PaymentFailureResponse response) async {
+    var userData = await fetchUserData(email!);
+    if (userData == null) {
+      print("No user data found.");
+      return;
+    }
+    String fullName = userData['fullname'] ?? 'Unknown';
+    String paymentID = "NA";
+    String finalamount = amount;
+    String subscriptionplan = index == 0
+        ? "Annual Plan"
+        : index == 1
+            ? "Semi-Annual Plan"
+            : index == 2
+                ? "Monthly Plan"
+                : "Invalid";
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd - kk:mm').format(now);
+    String status = "Failed with error ${response.message}";
+    await PaymentUpload.insertValueIntoSpreadsheet(email!, fullName, paymentID,
+        finalamount, subscriptionplan, formattedDate, status);
+    Fluttertoast.showToast(msg: "Payment Failed " + response.message!);
   }
 
   void HandleExternalWallet(ExternalWalletResponse response) {
@@ -61,6 +117,7 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getCurrentUser();
     index = widget.index;
     if (index == 0) {
       amount = "949";
@@ -107,11 +164,11 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
             // padding: EdgeInsets.only(
             //   left: (10 / 411.42857142857144) * screenWidth,
             // ), // Add some margin here
-            margin: EdgeInsets.only(right: 237),
+            margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
             child: IconButton(
               icon: Icon(
                 Icons.menu_sharp,
-                size: 30,
+                size: (30 / 784) * screenHeight,
                 color: Colors.white,
               ),
               onPressed: () {
@@ -122,7 +179,7 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: 25),
+            margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
             child: Image.asset(
               "assets/images/app_bar_end_icon.png",
             ),
@@ -157,7 +214,7 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
       ),
       backgroundColor: Colors.white,
       drawer: Container(
-        width: 240,
+        width: (240 / 360) * screenWidth,
         child: Drawer(
           child: DrawerContent(),
         ),
@@ -168,36 +225,45 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
         children: [
           Column(
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: (20 / 784) * screenHeight),
               Container(
                 child: Image(
                     image: AssetImage('assets/images/subscription_logo.png')),
               ),
               Container(
-                margin: EdgeInsets.only(left: 50, right: 50, top: 20),
+                margin: EdgeInsets.only(
+                    left: (50 / 360) * screenWidth,
+                    right: (50 / 360) * screenWidth,
+                    top: (20 / 784) * screenHeight),
                 child: Text(
                   'Get Premium',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.saira(
-                    fontSize: 24,
+                    fontSize: (24 / 784) * screenHeight,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff4600A9),
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 30),
+                margin: EdgeInsets.only(
+                    left: (20 / 360) * screenWidth,
+                    right: (20 / 360) * screenWidth,
+                    top: (30 / 784) * screenHeight),
                 child: Text(
                   "Unlock exclusive benefits with our premium subscription. Before we proceed to the payment gateway, please review your subscription details:",
                   style: GoogleFonts.dmSans(
                       color: Color(0xff1B1B1B),
                       fontWeight: FontWeight.w400,
-                      fontSize: 16),
+                      fontSize: (16 / 784) * screenHeight),
                   textAlign: TextAlign.center,
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 30),
+                margin: EdgeInsets.only(
+                    left: (20 / 360) * screenWidth,
+                    right: (20 / 360) * screenWidth,
+                    top: (30 / 784) * screenHeight),
                 child: Text(
                   index == 0
                       ? 'Annual Plan'
@@ -209,12 +275,13 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
                   style: GoogleFonts.saira(
                       color: Color(0xff344054),
                       fontWeight: FontWeight.w500,
-                      fontSize: 16),
+                      fontSize: (16 / 784) * screenHeight),
                   textAlign: TextAlign.center,
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                margin: EdgeInsets.fromLTRB((25 / 360) * screenWidth,
+                    (20 / 784) * screenHeight, (25 / 360) * screenWidth, 0),
                 child: TextField(
                   textAlign: TextAlign.center,
                   readOnly: true,
@@ -222,11 +289,15 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
                   decoration: InputDecoration(
                     hintText: "Amount: $amount",
                     hintStyle: GoogleFonts.saira(
-                      fontSize: 16,
+                      fontSize: (16 / 784) * screenHeight,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff708090),
                     ),
-                    contentPadding: EdgeInsets.fromLTRB(16, 18, 19, 15),
+                    contentPadding: EdgeInsets.fromLTRB(
+                        (16 / 360) * screenWidth,
+                        (18 / 784) * screenHeight,
+                        (19 / 360) * screenWidth,
+                        (15 / 784) * screenHeight),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
@@ -246,7 +317,7 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
                 ),
               ),
               SizedBox(
-                height: 15,
+                height: (15 / 784) * screenHeight,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -304,7 +375,10 @@ class _RazorPayGatewayState extends State<RazorPayGateway> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (35 / 411.42857142857144) * screenWidth, 40, 0, 0),
+                    (35 / 411.42857142857144) * screenWidth,
+                    (40 / 784) * screenHeight,
+                    0,
+                    0),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),

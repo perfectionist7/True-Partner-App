@@ -1,3 +1,5 @@
+import 'package:deevot_new_project/help.dart';
+import 'package:deevot_new_project/subscription.dart';
 import 'package:http/http.dart';
 
 import 'api_services.dart';
@@ -24,11 +26,11 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String concatenatedValues = "";
   bool isDrawerOpen = false;
   String? email;
-  String? currentconvo;
+  String currentconvo = "";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var controller = Get.put(ChatsController());
   ScrollController _scrollController = ScrollController();
@@ -36,17 +38,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    clearChatData();
     currentconvo = "";
     getCurrentUser();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() async {
-    // TODO: implement dispose
+    WidgetsBinding.instance.removeObserver(this);
     await postConvo(currentconvo);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      // Call your method here
+      await postConvo(currentconvo);
+    }
   }
 
   getCurrentUser() async {
@@ -62,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void clearChatData() {
     controller.chats.clear();
+    controller.questionSet = controller.set1;
     setState(() {});
   }
 
@@ -95,11 +109,11 @@ class _HomeScreenState extends State<HomeScreen> {
             // padding: EdgeInsets.only(
             //   left: (10 / 411.42857142857144) * screenWidth,
             // ), // Add some margin here
-            margin: EdgeInsets.only(right: 237),
+            margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
             child: IconButton(
               icon: Icon(
                 Icons.menu_sharp,
-                size: 30,
+                size: (30 / 784) * screenHeight,
                 color: Colors.white,
               ),
               onPressed: () {
@@ -110,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: 25),
+            margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
             child: Image.asset(
               "assets/images/app_bar_end_icon.png",
             ),
@@ -119,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       backgroundColor: Colors.white,
       drawer: Container(
-        width: 240,
+        width: (240 / 360) * screenWidth,
         child: Drawer(
           child: DrawerContent(),
         ),
@@ -128,8 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.fromLTRB(
-                (10 / 411.42857142857144) * screenWidth, 5, 0, 0),
+            margin: EdgeInsets.fromLTRB((10 / 411.42857142857144) * screenWidth,
+                (5 / 784) * screenHeight, 0, 0),
             child: TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: Color(0xff352980), // Button colorcolor
@@ -142,17 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () async {
                 await postConvo(currentconvo);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
+                clearChatData();
                 Fluttertoast.showToast(
                     msg: "Thanks for talking, here is a new chat!");
               },
               child: Text(
                 'New Chat',
-                style:
-                    TextStyle(fontSize: 14, color: Colors.white), // Text size
+                style: TextStyle(
+                    fontSize: (14 / 784) * screenHeight,
+                    color: Colors.white), // Text size
               ),
             ),
           ),
@@ -166,7 +178,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 : Expanded(
                     child: controller.chats.isEmpty
                         ? Container(
-                            margin: EdgeInsets.only(top: 80),
+                            margin:
+                                EdgeInsets.only(top: (80 / 784) * screenHeight),
                             child: SizedBox(
                               height: (95 / 784) * screenHeight,
                               child: ListView.builder(
@@ -178,8 +191,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: (MediaQuery.of(context).size.width -
                                             (60 / 360) * screenWidth) /
                                         1.25, // Divide width equally between items with padding
-                                    margin: const EdgeInsets.fromLTRB(
-                                        50, 5, 50, 20),
+                                    margin: EdgeInsets.fromLTRB(
+                                        (50 / 360) * screenWidth,
+                                        (5 / 784) * screenHeight,
+                                        (50 / 360) * screenWidth,
+                                        (20 / 784) * screenHeight),
                                     decoration: BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
@@ -354,7 +370,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: IconButton(
                                             icon: Icon(Icons.thumb_down,
                                                 color: Colors.blueGrey,
-                                                size: 20),
+                                                size:
+                                                    (20 / 784) * screenHeight),
                                             onPressed: () {
                                               showDialog(
                                                 context: context,
@@ -365,111 +382,289 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       feedbackController =
                                                       TextEditingController();
                                                   return AlertDialog(
-                                                    title: Text('Feedback'),
-                                                    content: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
+                                                    title: Text(
+                                                      'Feedback',
+                                                      style: GoogleFonts.saira(
+                                                        fontSize: (20 / 784) *
+                                                            screenHeight,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color:
+                                                            Color(0xff001F3E),
+                                                      ),
+                                                    ),
+                                                    content: Stack(
                                                       children: [
-                                                        Text(
-                                                            'Please provide your feedback:'),
-                                                        SizedBox(height: 10),
-                                                        TextField(
-                                                          controller:
-                                                              feedbackController,
+                                                        Container(
+                                                          margin: EdgeInsets.only(
+                                                              left: (10 / 360) *
+                                                                  screenWidth),
+                                                          child: Text(
+                                                            'Was this chat helpful?',
+                                                            style: GoogleFonts
+                                                                .saira(
+                                                              fontSize: (17 /
+                                                                      784) *
+                                                                  screenHeight,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Color(
+                                                                  0xff344054),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
                                                           decoration:
-                                                              InputDecoration(
-                                                            hintText:
-                                                                'Enter your feedback',
-                                                            border:
-                                                                OutlineInputBorder(),
+                                                              BoxDecoration(
+                                                                  border: Border
+                                                                      .all(
+                                                                    color: Color(
+                                                                        0xff6200EE), // border color
+                                                                    width:
+                                                                        1.0, // border width
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              8))),
+                                                          margin: EdgeInsets.only(
+                                                              top: (40 / 784) *
+                                                                  screenHeight),
+                                                          child: TextFormField(
+                                                            controller:
+                                                                feedbackController,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(10),
+                                                              hintText:
+                                                                  'Describe your experience...',
+                                                              hintStyle:
+                                                                  GoogleFonts
+                                                                      .saira(
+                                                                fontSize: (14 /
+                                                                        784) *
+                                                                    screenHeight,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Color(
+                                                                    0xff667085),
+                                                              ),
+                                                            ),
+                                                            maxLines: 5,
+                                                            style: GoogleFonts
+                                                                .saira(
+                                                              fontSize: (14 /
+                                                                      784) *
+                                                                  screenHeight,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Colors
+                                                                  .black, // input text color
+                                                            ),
                                                           ),
-                                                          maxLines: 3,
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                            'Rate the message:'),
-                                                        SizedBox(height: 5),
-                                                        RatingBar.builder(
-                                                          initialRating: 0,
-                                                          minRating: 1,
-                                                          direction:
-                                                              Axis.horizontal,
-                                                          allowHalfRating: true,
-                                                          itemCount: 5,
-                                                          itemBuilder:
-                                                              (context, _) =>
-                                                                  Icon(
-                                                            Icons.star,
-                                                            color: Colors.amber,
+                                                        Container(
+                                                          margin: EdgeInsets.only(
+                                                              left: (10 / 360) *
+                                                                  screenWidth,
+                                                              top: (180 / 784) *
+                                                                  screenHeight),
+                                                          child:
+                                                              RatingBar.builder(
+                                                            unratedColor:
+                                                                Colors.white,
+                                                            glowColor: Color(
+                                                                0xffFFC107),
+                                                            initialRating: 0,
+                                                            minRating: 1,
+                                                            direction:
+                                                                Axis.horizontal,
+                                                            allowHalfRating:
+                                                                true,
+                                                            itemCount: 5,
+                                                            itemBuilder:
+                                                                (context, _) =>
+                                                                    Icon(
+                                                              Icons.star,
+                                                              color:
+                                                                  Colors.amber,
+                                                            ),
+                                                            onRatingUpdate:
+                                                                (ratingValue) {
+                                                              rating =
+                                                                  ratingValue;
+                                                            },
                                                           ),
-                                                          onRatingUpdate:
-                                                              (ratingValue) {
-                                                            rating =
-                                                                ratingValue;
-                                                          },
                                                         ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              margin: EdgeInsets.fromLTRB(
+                                                                  (0 / 360) *
+                                                                      screenWidth,
+                                                                  (240 / 784) *
+                                                                      screenHeight,
+                                                                  (10 / 360) *
+                                                                      screenWidth,
+                                                                  (10 / 784) *
+                                                                      screenHeight),
+                                                              height: (50 /
+                                                                      784) *
+                                                                  screenHeight,
+                                                              width: (105 /
+                                                                      360) *
+                                                                  screenWidth,
+                                                              child:
+                                                                  ElevatedButton(
+                                                                      onPressed:
+                                                                          () async {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child: Text(
+                                                                          'Cancel',
+                                                                          style: GoogleFonts.dmSans(
+                                                                              fontSize: (16 / 784) *
+                                                                                  screenHeight,
+                                                                              fontWeight: FontWeight
+                                                                                  .w700,
+                                                                              color: Color(
+                                                                                  0xff6750A4))),
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            Color(0xffF3EDF7),
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                          side: BorderSide(
+                                                                              color: Color(0xffD3D3D3),
+                                                                              width: 1),
+                                                                        ),
+                                                                      )),
+                                                            ),
+                                                            Container(
+                                                              margin: EdgeInsets.fromLTRB(
+                                                                  (10 / 360) *
+                                                                      screenWidth,
+                                                                  (240 / 784) *
+                                                                      screenHeight,
+                                                                  (0 / 360) *
+                                                                      screenWidth,
+                                                                  (10 / 784) *
+                                                                      screenHeight),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                        0xff4600A9),
+                                                                    Color(
+                                                                        0xff001F7D),
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .topLeft,
+                                                                  end: Alignment
+                                                                      .bottomRight,
+                                                                ),
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          12),
+                                                                ),
+                                                              ),
+                                                              height: (50 /
+                                                                      784) *
+                                                                  screenHeight,
+                                                              width: (105 /
+                                                                      360) *
+                                                                  screenWidth,
+                                                              child:
+                                                                  ElevatedButton(
+                                                                      onPressed:
+                                                                          () async {
+                                                                        if (feedbackController
+                                                                            .text
+                                                                            .isEmpty) {
+                                                                          Fluttertoast.showToast(
+                                                                              msg: "Please enter your feedback");
+                                                                          return;
+                                                                        }
+                                                                        User? user = FirebaseAuth
+                                                                            .instance
+                                                                            .currentUser;
+                                                                        if (user ==
+                                                                            null) {
+                                                                          print(
+                                                                              "No user is currently signed in.");
+                                                                          return;
+                                                                        }
+                                                                        String
+                                                                            email =
+                                                                            user.email!;
+                                                                        var userData =
+                                                                            await fetchUserData(email);
+                                                                        if (userData ==
+                                                                            null) {
+                                                                          print(
+                                                                              "No user data found.");
+                                                                          return;
+                                                                        }
+                                                                        String
+                                                                            fullName =
+                                                                            userData['fullname'] ??
+                                                                                'Unknown';
+                                                                        String
+                                                                            feedback =
+                                                                            feedbackController.text;
+                                                                        await ConversationUpload.insertValueIntoSpreadsheet(
+                                                                            fullName,
+                                                                            email,
+                                                                            feedback,
+                                                                            currentconvo!,
+                                                                            (index + 1).toString(),
+                                                                            rating.toString());
+                                                                        print(
+                                                                            'Feedback: $feedback');
+                                                                        print(
+                                                                            'Rating: $rating');
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        Fluttertoast.showToast(
+                                                                            msg:
+                                                                                "We have recieved your feedback, we will make sure this does not happen again!");
+                                                                      },
+                                                                      child: Text(
+                                                                          'Submit',
+                                                                          style: GoogleFonts.dmSans(
+                                                                              fontSize: (16 / 784) *
+                                                                                  screenHeight,
+                                                                              fontWeight: FontWeight
+                                                                                  .w700,
+                                                                              color: Colors
+                                                                                  .white)),
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            Colors.transparent,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(12)),
+                                                                      )),
+                                                            ),
+                                                          ],
+                                                        )
                                                       ],
                                                     ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text('Cancel'),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          User? user =
-                                                              FirebaseAuth
-                                                                  .instance
-                                                                  .currentUser;
-                                                          if (user == null) {
-                                                            print(
-                                                                "No user is currently signed in.");
-                                                            return;
-                                                          }
-                                                          String email =
-                                                              user.email!;
-                                                          var userData =
-                                                              await fetchUserData(
-                                                                  email);
-                                                          if (userData ==
-                                                              null) {
-                                                            print(
-                                                                "No user data found.");
-                                                            return;
-                                                          }
-                                                          String fullName =
-                                                              userData[
-                                                                      'fullname'] ??
-                                                                  'Unknown';
-                                                          String feedback =
-                                                              feedbackController
-                                                                  .text;
-                                                          await ConversationUpload
-                                                              .insertValueIntoSpreadsheet(
-                                                                  fullName,
-                                                                  email,
-                                                                  feedback,
-                                                                  currentconvo!,
-                                                                  (index + 1)
-                                                                      .toString(),
-                                                                  rating
-                                                                      .toString());
-                                                          print(
-                                                              'Feedback: $feedback');
-                                                          print(
-                                                              'Rating: $rating');
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          Fluttertoast.showToast(
-                                                              msg:
-                                                                  "We have recieved your feedback, we will make sure this does not happen again!");
-                                                        },
-                                                        child: Text('Save'),
-                                                      ),
-                                                    ],
                                                   );
                                                 },
                                               );
@@ -498,7 +693,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: (MediaQuery.of(context).size.width -
                                 (60 / 360) * screenWidth) /
                             1.25, // Divide width equally between items with padding
-                        margin: const EdgeInsets.fromLTRB(15, 5, 5, 10),
+                        margin: EdgeInsets.fromLTRB(
+                            (15 / 360) * screenWidth,
+                            (5 / 784) * screenHeight,
+                            (5 / 360) * screenWidth,
+                            (10 / 784) * screenHeight),
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -511,7 +710,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
+                          padding: EdgeInsets.fromLTRB(
                               5, 5, 0, 10), // Increased bottom padding
                           child: ListTile(
                             title: Text(
@@ -581,7 +780,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                height: 52,
+                height: (52 / 784) * screenHeight,
                 margin: EdgeInsets.only(
                     left: (24 / 360) * screenWidth,
                     top: (0 / 784) * screenHeight,
@@ -659,8 +858,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Image(
                           image:
                               new AssetImage("assets/images/send_button.png"),
-                          height: 36,
-                          width: 36,
+                          height: (36 / 784) * screenHeight,
+                          width: (36 / 360) * screenWidth,
                           color: null,
                           alignment: Alignment.center,
                         )),

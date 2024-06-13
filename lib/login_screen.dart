@@ -35,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    showSpinner = false;
+    setState(() {});
     _passwordVisible = false;
   }
 
@@ -233,7 +235,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           bottom: 0.0166836734693878 * screenHeight),
                       border: InputBorder.none,
                       suffixIcon: IconButton(
-                        padding: EdgeInsets.only(right: 10),
+                        padding:
+                            EdgeInsets.only(right: (10 / 360) * screenWidth),
                         icon: Icon(
                           _passwordVisible
                               ? Icons.visibility
@@ -280,7 +283,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     // ),
                     Container(
                       margin: EdgeInsets.only(
-                          right: (20 / 360) * screenWidth, left: 210),
+                          right: (20 / 360) * screenWidth,
+                          left: (210 / 360) * screenWidth),
                       child: TextButton(
                         onPressed: () async {
                           setState(() {
@@ -342,8 +346,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         final user = await _auth.signInWithEmailAndPassword(
                             email: email, password: password);
 
-                        email = '';
-                        password = '';
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setString("email", email);
@@ -351,6 +353,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         _checkAuthentication();
                         _passwordcontroller.clear();
                         _controller.clear();
+
                         Fluttertoast.showToast(msg: 'Successfully Logged In!');
                         setState(() {
                           showSpinner = false;
@@ -389,6 +392,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         showSpinner = false;
                       });
                       errorMessage = '';
+                      email = '';
+                      password = '';
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -83,11 +83,11 @@ class Subscription_State extends State<Subscription> {
                 // padding: EdgeInsets.only(
                 //   left: (10 / 411.42857142857144) * screenWidth,
                 // ), // Add some margin here
-                margin: EdgeInsets.only(right: 237),
+                margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
                 child: IconButton(
                   icon: Icon(
                     Icons.menu_sharp,
-                    size: 30,
+                    size: (30 / 784) * screenHeight,
                     color: Colors.white,
                   ),
                   onPressed: () {
@@ -98,7 +98,7 @@ class Subscription_State extends State<Subscription> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
                 child: Image.asset(
                   "assets/images/app_bar_end_icon.png",
                 ),
@@ -133,7 +133,7 @@ class Subscription_State extends State<Subscription> {
           ),
           backgroundColor: Colors.white,
           drawer: Container(
-            width: 240,
+            width: (240 / 360) * screenWidth,
             child: Drawer(
               child: DrawerContent(),
             ),
@@ -143,24 +143,30 @@ class Subscription_State extends State<Subscription> {
                 parent: AlwaysScrollableScrollPhysics()),
             children: [
               Container(
-                margin: EdgeInsets.only(left: 50, right: 50, top: 30),
+                margin: EdgeInsets.only(
+                    left: (50 / 360) * screenWidth,
+                    right: (50 / 360) * screenWidth,
+                    top: (30 / 784) * screenHeight),
                 child: Text(
                   'Get Premium',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.saira(
-                    fontSize: 24,
+                    fontSize: (24 / 784) * screenHeight,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff4600A9),
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 16, right: 16, top: 30),
+                margin: EdgeInsets.only(
+                    left: (16 / 360) * screenWidth,
+                    right: (16 / 360) * screenWidth,
+                    top: (30 / 784) * screenHeight),
                 child: Text(
                   'Unlock all the power of this mobile tool and enjoy digital experience like never before!',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.saira(
-                    fontSize: 16,
+                    fontSize: (16 / 784) * screenHeight,
                     fontWeight: FontWeight.w400,
                     color: Color(0xff1B1B1B),
                   ),
@@ -173,9 +179,13 @@ class Subscription_State extends State<Subscription> {
               Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    height: 70,
-                    width: 320,
+                    margin: EdgeInsets.fromLTRB(
+                        (20 / 360) * screenWidth,
+                        (20 / 784) * screenHeight,
+                        (20 / 360) * screenWidth,
+                        (20 / 784) * screenHeight),
+                    height: (70 / 784) * screenHeight,
+                    width: (320 / 360) * screenWidth,
                     decoration: BoxDecoration(
                       color: Color(0xffF6D748).withOpacity(0.10),
                       borderRadius: BorderRadius.circular(16),
@@ -195,7 +205,7 @@ class Subscription_State extends State<Subscription> {
                                 TextSpan(
                                   text: 'Annual Plan\n',
                                   style: GoogleFonts.dmSans(
-                                    fontSize: 18,
+                                    fontSize: (18 / 784) * screenHeight,
                                     fontWeight: FontWeight.w500,
                                     color:
                                         Color(0xff334C65), // Color for "Annual"
@@ -204,7 +214,7 @@ class Subscription_State extends State<Subscription> {
                                 TextSpan(
                                   text: 'Just 949 per year',
                                   style: GoogleFonts.dmSans(
-                                    fontSize: 16,
+                                    fontSize: (16 / 784) * screenHeight,
                                     fontWeight: FontWeight.w400,
                                     color: Color(
                                         0xff1B1B1B), // Color for the text below
@@ -234,7 +244,9 @@ class Subscription_State extends State<Subscription> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 230, top: 30),
+                    margin: EdgeInsets.only(
+                        left: (230 / 360) * screenWidth,
+                        top: (30 / 784) * screenHeight),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                           20), // Adjust the value as needed
@@ -242,14 +254,15 @@ class Subscription_State extends State<Subscription> {
                           0xff26CB63), // Change the color according to your design
                     ),
                     padding: EdgeInsets.only(
-                        left: 15,
-                        right: 15,
-                        top: 7,
-                        bottom: 7), // Adjust padding as needed
+                      left: (15 / 360) * screenWidth,
+                      right: (15 / 360) * screenWidth,
+                      top: (7 / 784) * screenHeight,
+                      bottom: (7 / 784) * screenHeight,
+                    ), // Adjust padding as needed
                     child: Text(
                       'Best Value',
                       style: GoogleFonts.inter(
-                        fontSize: 12,
+                        fontSize: (12 / 784) * screenHeight,
                         fontWeight: FontWeight.w500,
                         color: Colors.white, // Color for "Annual"
                       ),
@@ -258,9 +271,10 @@ class Subscription_State extends State<Subscription> {
                 ],
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                height: 70,
-                width: 300,
+                margin: EdgeInsets.fromLTRB((20 / 360) * screenWidth, 0,
+                    (20 / 360) * screenWidth, (20 / 784) * screenHeight),
+                height: (70 / 784) * screenHeight,
+                width: (300 / 360) * screenWidth,
                 decoration: BoxDecoration(
                   color: Color(0xfffffee0),
                   borderRadius: BorderRadius.circular(16),
@@ -279,7 +293,7 @@ class Subscription_State extends State<Subscription> {
                             TextSpan(
                               text: 'Semi-Annual Plan\n',
                               style: GoogleFonts.dmSans(
-                                fontSize: 18,
+                                fontSize: (18 / 784) * screenHeight,
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xff334C65), // Color for "Annual"
                               ),
@@ -287,7 +301,7 @@ class Subscription_State extends State<Subscription> {
                             TextSpan(
                               text: 'Only 499 per 6 months',
                               style: GoogleFonts.dmSans(
-                                fontSize: 16,
+                                fontSize: (16 / 784) * screenHeight,
                                 fontWeight: FontWeight.w400,
                                 color: Color(
                                     0xff1B1B1B), // Color for the text below
@@ -315,9 +329,10 @@ class Subscription_State extends State<Subscription> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                height: 70,
-                width: 300,
+                margin: EdgeInsets.fromLTRB((20 / 360) * screenWidth, 0,
+                    (20 / 360) * screenWidth, (20 / 784) * screenHeight),
+                height: (70 / 784) * screenHeight,
+                width: (300 / 360) * screenWidth,
                 decoration: BoxDecoration(
                   color: Color(0xffF6D748).withOpacity(0.10),
                   borderRadius: BorderRadius.circular(16),
@@ -336,7 +351,7 @@ class Subscription_State extends State<Subscription> {
                             TextSpan(
                               text: 'Monthly Plan\n',
                               style: GoogleFonts.dmSans(
-                                fontSize: 18,
+                                fontSize: (18 / 784) * screenHeight,
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xff334C65), // Color for "Annual"
                               ),
@@ -344,7 +359,7 @@ class Subscription_State extends State<Subscription> {
                             TextSpan(
                               text: 'Just 99 per month',
                               style: GoogleFonts.dmSans(
-                                fontSize: 16,
+                                fontSize: (16 / 784) * screenHeight,
                                 fontWeight: FontWeight.w400,
                                 color: Color(
                                     0xff1B1B1B), // Color for the text below
@@ -430,7 +445,10 @@ class Subscription_State extends State<Subscription> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                margin: EdgeInsets.only(
+                    left: (20 / 360) * screenWidth,
+                    right: (20 / 360) * screenWidth,
+                    top: (20 / 784) * screenHeight),
                 child: Text.rich(
                   textAlign: TextAlign.center,
                   TextSpan(
@@ -438,7 +456,7 @@ class Subscription_State extends State<Subscription> {
                       TextSpan(
                         text: 'By placing this order, you agree to the ',
                         style: GoogleFonts.dmSans(
-                          fontSize: 12,
+                          fontSize: (12 / 784) * screenHeight,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff1B1B1B), // Color for "Annual"
                         ),
@@ -446,7 +464,7 @@ class Subscription_State extends State<Subscription> {
                       TextSpan(
                         text: 'Terms of Service ',
                         style: GoogleFonts.dmSans(
-                          fontSize: 12,
+                          fontSize: (12 / 784) * screenHeight,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff1B1B1B),
                         ),
@@ -454,7 +472,7 @@ class Subscription_State extends State<Subscription> {
                       TextSpan(
                         text: 'and ',
                         style: GoogleFonts.dmSans(
-                          fontSize: 12,
+                          fontSize: (12 / 784) * screenHeight,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff1B1B1B), // Color for "Annual"
                         ),
@@ -462,7 +480,7 @@ class Subscription_State extends State<Subscription> {
                       TextSpan(
                         text: 'Privacy Policy.',
                         style: GoogleFonts.dmSans(
-                          fontSize: 12,
+                          fontSize: (12 / 784) * screenHeight,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff1B1B1B),
                         ),
@@ -474,7 +492,10 @@ class Subscription_State extends State<Subscription> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (40 / 411.42857142857144) * screenWidth, 30, 0, 30),
+                    (40 / 411.42857142857144) * screenWidth,
+                    (30 / 784) * screenHeight,
+                    0,
+                    (30 / 784) * screenHeight),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),

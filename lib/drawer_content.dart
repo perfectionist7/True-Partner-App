@@ -101,7 +101,7 @@ class _DrawerContentState extends State<DrawerContent> {
           padding: EdgeInsets.zero,
           children: [
             SizedBox(
-              height: 225,
+              height: (225 / 784) * screenHeight,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -111,7 +111,10 @@ class _DrawerContentState extends State<DrawerContent> {
                     Stack(
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top: 10, left: 50, right: 20),
+                          margin: EdgeInsets.only(
+                              top: (10 / 784) * screenHeight,
+                              left: (50 / 360) * screenWidth,
+                              right: (20 / 360) * screenWidth),
                           child: FutureBuilder<String?>(
                             future: profileImageUrlFuture,
                             builder: (context, snapshot) {
@@ -122,13 +125,13 @@ class _DrawerContentState extends State<DrawerContent> {
                                 if (snapshot.hasError ||
                                     snapshot.data == null) {
                                   return CircleAvatar(
-                                    radius: 45,
+                                    radius: (45 / 784) * screenHeight,
                                     backgroundImage:
                                         AssetImage("assets/profileimg.jpg"),
                                   );
                                 } else {
                                   return CircleAvatar(
-                                    radius: 45,
+                                    radius: (45 / 784) * screenHeight,
                                     backgroundImage:
                                         NetworkImage(snapshot.data!),
                                   );
@@ -138,7 +141,8 @@ class _DrawerContentState extends State<DrawerContent> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 120),
+                          margin:
+                              EdgeInsets.only(top: (120 / 784) * screenHeight),
                           child: FutureBuilder<String?>(
                             future: fullNameFuture,
                             builder: (context, snapshot) {
@@ -151,7 +155,7 @@ class _DrawerContentState extends State<DrawerContent> {
                                   return Text(
                                     'Error Fetching Name',
                                     style: GoogleFonts.saira(
-                                      fontSize: 16,
+                                      fontSize: (16 / 784) * screenHeight,
                                       fontWeight: FontWeight.w500,
                                       color: Color(0xff001F3F),
                                     ),
@@ -161,7 +165,7 @@ class _DrawerContentState extends State<DrawerContent> {
                                     child: Text(
                                       '${snapshot.data}',
                                       style: GoogleFonts.saira(
-                                        fontSize: 18,
+                                        fontSize: (18 / 784) * screenHeight,
                                         fontWeight: FontWeight.w500,
                                         color: Color(0xff001F3F),
                                       ),
@@ -173,11 +177,14 @@ class _DrawerContentState extends State<DrawerContent> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 0, left: 170, right: 5),
+                          margin: EdgeInsets.only(
+                              top: 0,
+                              left: (170 / 360) * screenWidth,
+                              right: (5 / 360) * screenWidth),
                           child: IconButton(
                             icon: ImageIcon(
                               AssetImage('assets/images/sidebarcross.png'),
-                              size: 32,
+                              size: (32 / 784) * screenHeight,
                               color: Colors.black,
                             ),
                             onPressed: () {
@@ -298,18 +305,15 @@ class _DrawerContentState extends State<DrawerContent> {
                 ),
               ),
               onTap: () async {
-                // showSpinner = true;
-                _auth.signOut();
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 pref.remove("email");
+                _auth.signOut();
                 clearChatData();
-                Navigator.push(
+                Fluttertoast.showToast(msg: 'Logged out Successfully!');
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
-                Fluttertoast.showToast(msg: 'Logged out Successfully!');
-
-                // showSpinner = false;
               },
             ),
             Divider(
