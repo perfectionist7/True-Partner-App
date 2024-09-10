@@ -203,7 +203,7 @@ class _Help_ScreenState extends State<Help_Screen> {
                                   fontSize:
                                       (16 / 890.2857142857143) * screenHeight,
                                   fontWeight: FontWeight.w300,
-                                  color: const Color(0xff0A1621),
+                                  color: const Color(0xff6200EE),
                                   decoration: TextDecoration.underline),
                               text: "www.devot.ai",
                               recognizer: TapGestureRecognizer()
