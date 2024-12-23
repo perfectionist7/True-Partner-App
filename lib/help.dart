@@ -46,34 +46,19 @@ class _Help_ScreenState extends State<Help_Screen> {
           key: _scaffoldKey,
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: const Color(0xff001F3F),
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xff352980),
-                    Color(0xff604AE6),
-                    Color(0xff352980),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-            ),
+            backgroundColor: Color(0xffe6f0ff),
+            toolbarHeight: 70,
             actions: [
               Container(
                 // padding: EdgeInsets.only(
                 //   left: (10 / 411.42857142857144) * screenWidth,
                 // ), // Add some margin here
-                margin: EdgeInsets.only(right: (237 / 360) * screenWidth),
+                margin: EdgeInsets.only(right: 300),
                 child: IconButton(
                   icon: Icon(
                     Icons.menu_sharp,
-                    size: (30 / 784) * screenHeight,
-                    color: Colors.white,
+                    size: 30,
+                    color: Colors.black,
                   ),
                   onPressed: () {
                     setState(() {
@@ -82,43 +67,11 @@ class _Help_ScreenState extends State<Help_Screen> {
                   },
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(right: (25 / 360) * screenWidth),
-                child: Image.asset(
-                  "assets/images/app_bar_end_icon.png",
-                ),
-              ),
             ],
-            // title: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     IconButton(
-            //         color: Colors.white,
-            //         // onPressed: () async {
-            //         //   await FirebaseAuth.instance.signOut();
-            //         //   clearChatData();
-            //         //   Get.back();
-            //         // },
-            //         icon: const Icon(
-            //           Icons.menu_rounded,
-            //           size: 30,
-            //         )),
-            //     // Text(
-            //     //   "Back",
-            //     //   style: GoogleFonts.raleway(
-            //     //       fontSize: (16 / 784) * screenHeight,
-            //     //       color: Colors.white,
-            //     //       fontWeight: FontWeight.w600),
-            //     // ),
-            //   ],
-            // ),
           ),
           backgroundColor: Colors.white,
           drawer: Container(
-            width: (240 / 360) * screenWidth,
+            width: 240,
             child: Drawer(
               child: DrawerContent(),
             ),
@@ -130,17 +83,33 @@ class _Help_ScreenState extends State<Help_Screen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: (30 / 784) * screenHeight),
-                    child: Image.asset(
-                      "assets/images/aboutus_devotai.png",
-                      scale: 0.4,
-                      height: screenHeight * 0.2,
-                      width: screenWidth * 0.3,
-                    ),
+                  Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 0),
+                        child: Image.asset(
+                          "assets/images/aboutusimg.png",
+                          scale: 2,
+                          height: screenHeight * 0.203,
+                          width: screenWidth * 1,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 50, left: 95),
+                        child: Text(
+                          "About Us",
+                          style: GoogleFonts.sourceSerif4(
+                            fontSize: (40 / 890.2857142857143) * screenHeight,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
-                    height: (10 / 890.2857142857143) * screenHeight,
+                    height: (35 / 890.2857142857143) * screenHeight,
                   ),
                   // Image.asset(
                   //   "assets/images/elevate_playtime.png",
@@ -153,23 +122,26 @@ class _Help_ScreenState extends State<Help_Screen> {
                   //SingleChildScrollView(
                   //physics: BouncingScrollPhysics(),
                   SizedBox(
-                    height: screenHeight * 0.1,
+                    height: screenHeight * 0.12,
                     width: screenWidth * 0.6,
                     child: Text(
-                      "Revolutionizing Industries with AI Solutions",
+                      "Empowering Minds to Thrive: Your Path to Mental Wellness",
                       style: GoogleFonts.poppins(
-                        fontSize: (16 / 890.2857142857143) * screenHeight,
+                        fontSize: (18 / 890.2857142857143) * screenHeight,
                         fontWeight: FontWeight.w400,
-                        color: Colors.blueGrey,
+                        color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(
-                    height: screenHeight * 0.25,
-                    width: screenWidth * 0.6,
+                    height: (20 / 890.2857142857143) * screenHeight,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.26,
+                    width: screenWidth * 0.67,
                     child: Text(
-                      "We are a cutting-edge startup specializing in Artificial Intelligence, Web Development, and App Development.",
+                      "I am a passionate app developer from Manipal Institute of Technology, dedicated to crafting innovative solutions and driving technological advancement in mental health and wellness.",
                       style: GoogleFonts.poppins(
                         fontSize: (16 / 890.2857142857143) * screenHeight,
                         fontWeight: FontWeight.w400,
@@ -180,11 +152,8 @@ class _Help_ScreenState extends State<Help_Screen> {
                   ),
                   //),
                   SizedBox(
-                    height: (5 / 890.2857142857143) * screenHeight,
-                  ),
-                  SizedBox(
-                      height: screenHeight * 0.13,
-                      width: screenWidth * 0.6,
+                      height: screenHeight * 0.08,
+                      width: screenWidth * 0.7,
                       child: RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(children: [
@@ -203,17 +172,18 @@ class _Help_ScreenState extends State<Help_Screen> {
                                   fontSize:
                                       (16 / 890.2857142857143) * screenHeight,
                                   fontWeight: FontWeight.w300,
-                                  color: const Color(0xff6200EE),
+                                  color: const Color(0xff0A1621),
                                   decoration: TextDecoration.underline),
-                              text: "www.devot.ai",
+                              text: "contact@pulsebeat.com",
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
-                                  var url = Uri.parse("https://www.devot.ai/");
-                                  if (await canLaunchUrl(url)) {
-                                    await launchUrl(url);
-                                  } else {
-                                    throw 'Coud not launch $url';
-                                  }
+                                  final Uri _emailLaunchUri = Uri(
+                                      scheme: 'mailto',
+                                      path: 'contact@pulsebeat.com',
+                                      queryParameters: {
+                                        'subject': 'Queries/Help'
+                                      });
+                                  launch(_emailLaunchUri.toString());
                                 },
                             ),
                           ])))
@@ -222,10 +192,7 @@ class _Help_ScreenState extends State<Help_Screen> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(
-                    (40 / 411.42857142857144) * screenWidth,
-                    (20 / 784) * screenHeight,
-                    0,
-                    0),
+                    (40 / 411.42857142857144) * screenWidth, 35, 0, 0),
                 padding: const EdgeInsets.all(1),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded),
